@@ -4,6 +4,7 @@ body,html,#root{
     margin: 0;
     padding: 0;
     background-image: url("/image.png");
+    background-size: cover;
   }
 
 .Menu_gauche{
@@ -103,13 +104,12 @@ body,html,#root{
     float: right;
     width: 75%;
     height: 100%;
-    
   }
 
   .Fond_container {
     background-color: #5D96EB;
     width: 400px;
-    height: 500px;
+    height: 600px;
     text-align: center;
     padding: 20px;
     margin: auto; /* Centre horizontalement en utilisant la marge automatique */
@@ -121,12 +121,32 @@ body,html,#root{
     background-color: white;
   }
 
-  .Information_de_connexion {
+  .Titre_connexion2{
+    margin-top: 100px;
+  }
+
+  .Information_de_connexion , .Information_de_connexion_connexion{
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
     align-items: flex-start;
   }
   
   .Information_de_connexion label {
     margin-bottom: 10px; /* Ajoutez une marge entre les étiquettes pour les espacer */
+  }
+  .Information_de_connexion_connexion label {
+    margin-bottom: 10px; /* Ajoutez une marge entre les étiquettes pour les espacer */
+  }
+  
+  .boutonConnexion , .boutonCreerCompte{
+    width: 100px;
+    height: 50px;
+  }
+  .inputConnexion{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width:  100%;
   }
