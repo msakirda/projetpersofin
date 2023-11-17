@@ -1,5 +1,6 @@
 import './App.css'
 import React from 'react';
+import MenuBar from './MenuBar';
 
 
 function Nouveau_projet() {
@@ -7,12 +8,10 @@ function Nouveau_projet() {
 
     return (
       <>
-       <div>
-          <h1>Nouveau Projet</h1>
-      </div>
-
-      
-
+        <MenuBar></MenuBar>
+        <div>
+            <h1>Nouveau Projet</h1>
+        </div>
       </>
     )
   }

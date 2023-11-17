@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import './App.css'
 import React, { useState } from 'react';
+import MenuBar from './MenuBar';
 
 
 function About() {
@@ -15,29 +16,7 @@ function About() {
 
     return (
       <>
-        <div className="Menu_gauche">
-              <div className="Titre_application"> 
-                  <h1>SPEEDALBUM</h1>
-              </div>
-                  
-              <div className='Menu_gauche_milieu'>
-                        
-                    <div className="Titre_Nouveau_projet"> 
-                    <Link to="/Nouveau_projet">Nouveau Projet</Link>
-                    <Link to="/Connexion">CONNEXION</Link>
-                    </div>
-              </div>
-
-              <div className='Menu_gauche_bas'> 
-                    <div className="Titre_About"> 
-                    <Link to="/About">About</Link>
-                    </div>
-
-                    <div className="Titre_Contact"> 
-                        <Link to="/Contact">Contact</Link>
-                    </div>
-              </div>
-        </div>
+        <MenuBar></MenuBar>
         <div className='Menu_droite_connexion'>
 
             <div className='Fond_container'>
@@ -63,7 +42,7 @@ function About() {
                         <input  type='mail' value={email} onChange={(e)=>setEmail(e.target.value)}/>
                     </div>
                     <button className='boutonCreerCompte'>
-                        Créer un compte
+                        Créer
                     </button>
                 </div>
 

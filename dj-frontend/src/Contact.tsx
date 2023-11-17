@@ -1,5 +1,6 @@
 import './App.css'
 import React from 'react';
+import MenuBar from './MenuBar';
 
 
 function Contact() {
@@ -7,12 +8,10 @@ function Contact() {
 
     return (
       <>
-       <div>
-          <h1>Contact</h1>
-      </div>
-
-      
-
+        <MenuBar></MenuBar>
+        <div>
+            <h1>Contact</h1>
+        </div>
       </>
     )
   }
