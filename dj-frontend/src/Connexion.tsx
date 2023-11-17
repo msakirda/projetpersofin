@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import './App.css'
+import './Connexion.css'
 import React, { useState } from 'react';
 import MenuBar from './MenuBar';
 
@@ -27,23 +28,26 @@ function About() {
                 <div className='Information_de_connexion'>
                     <div className='inputConnexion'>
                         <label > Identifiant:</label>
-                        <input  type='text' value={identifiant} onChange={(e) => setIdentifiant(e.target.value)}/>
+                        <input  className='inputConnectionInput' type='text' value={identifiant} onChange={(e) => setIdentifiant(e.target.value)}/>
                     </div>
                     <div className='inputConnexion'>
                         <label > Nouveau mot de passe:</label>
-                        <input  type='password' value={nouveaumotdepasse} onChange={(e) => setNouveaumotdepasse(e.target.value)}/>
+                        <input  className='inputConnectionInput' type='password' value={nouveaumotdepasse} onChange={(e) => setNouveaumotdepasse(e.target.value)}/>
                     </div>
                     <div className='inputConnexion'>
                         <label > Resaisir mot de passe:</label>
-                        <input type='password' value={resaisirmotdepasse} onChange={(e)=>setResaisirmotdepasse(e.target.value)}/>
+                        <input className='inputConnectionInput' type='password' value={resaisirmotdepasse} onChange={(e)=>setResaisirmotdepasse(e.target.value)}/>
                     </div>
                     <div className='inputConnexion'>
                         <label > Saisir e-mail:</label>
-                        <input  type='mail' value={email} onChange={(e)=>setEmail(e.target.value)}/>
+                        <input  className='inputConnectionInput' type='mail' value={email} onChange={(e)=>setEmail(e.target.value)}/>
                     </div>
                     <button className='boutonCreerCompte'>
                         Créer
                     </button>
+                    <div className='promptCreationCompte'>
+
+                    </div>
                 </div>
 
                 <div className='Titre_connexion2'> 
@@ -62,6 +66,9 @@ function About() {
                     <button className='boutonConnexion'>
                         Connexion
                     </button>
+                    <div className='promptConnexion'>
+
+                    </div>
                 </div>
             </div>
         </div>

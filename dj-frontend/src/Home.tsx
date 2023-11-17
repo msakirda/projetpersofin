@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import './App.css'
+import './Home.css'
 import MenuBar from './MenuBar'
 
 
