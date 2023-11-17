@@ -1,11 +1,12 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './App.css'
 import './Connexion.css'
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import MenuBar from './MenuBar';
 
 
 function About() {
+    const navigate = useNavigate();
     const [identifiant, setIdentifiant] = useState('');
     const [nouveaumotdepasse, setNouveaumotdepasse] = useState('')
     const [resaisirmotdepasse,setResaisirmotdepasse] = useState('')
@@ -14,6 +15,33 @@ function About() {
     const [identifiantConnexion, setidentifiantConnexion] = useState('');
     const [nouveaumotdepasseConnexion, setnouveaumotdepasseConnexion] = useState('')
     
+    const handleCreationCompte = useCallback(
+        async()=>{
+            const response = await fetch("http://localhost:1337/api/userpersos", {
+                method: "POST", 
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    identifiant: identifiant,
+                    nouveaumotdepasse: nouveaumotdepasse,
+                    resaisirmotdepasse: resaisirmotdepasse,
+                    email: email,
+
+                }) 
+            });
+            const data = await response.json()
+            console.log("reponse authentication", data);
+            if(data.user){
+                navigate("/")
+            }
+            else {
+                setNouveaumotdepasse("")
+                setIdentifiant("")
+            }
+
+        }, [identifiant,nouveaumotdepasse, navigate]
+    )
 
     return (
       <>
@@ -42,9 +70,7 @@ function About() {
                         <label > Saisir e-mail:</label>
                         <input  className='inputConnectionInput' type='mail' value={email} onChange={(e)=>setEmail(e.target.value)}/>
                     </div>
-                    <button className='boutonCreerCompte'>
-                        Créer
-                    </button>
+                    <button className='boutonCreerCompte' onClick={handleCreationCompte}>Créer</button>
                     <div className='promptCreationCompte'>
 
                     </div>
