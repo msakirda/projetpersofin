@@ -29,6 +29,10 @@ a {
     color: white;
 }
 
+
+.menuSection{
+    text-align: center;
+}
 @media screen and (min-width: 550px){
     
     .Menu_gauche{
@@ -51,7 +55,9 @@ a {
 
 
     .menuOption{
-        margin:20px
+        margin:20px;
+        width: 100%;
+        margin: 0;
     }
     
     .Menu_gauche_bas {

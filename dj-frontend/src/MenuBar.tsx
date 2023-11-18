@@ -20,26 +20,37 @@ function MenuBar() {
         <div id="boutonSandwich" onClick={handleClickSandwich}>
         
         </div>
-        <div className="Titre_application">
-            <h1>SPEEDALBUM</h1>
-        </div>
+        <Link to={"/"}>
+          <div className="Titre_application">
+              <h1>SPEEDALBUM</h1>
+          </div>
+        </Link>
       
         <div className='Menu_gauche_milieu'>
+          <Link className="menuOption" to="/Nouveau_projet">
             <div className="Titre_Nouveau_projet menuSection">
-                <Link className="menuOption" to="/Nouveau_projet">Nouveau Projet</Link>
+                  Nouveau Projet
             </div>
+          </Link>
+          <Link className="menuOption" to="/Connexion">
             <div className="menuSection">
-                <Link className="menuOption" to="/Connexion">Connexion</Link>
+                  Connexion
             </div>
+          </Link>
         </div>
 
         <div className='Menu_gauche_bas'>
+          <Link className="menuOption" to="/About">
             <div className="Titre_About menuSection">
-                <Link className="menuOption" to="/About">About</Link>
+              About
             </div>
+          </Link>
+      
+          <Link className="menuOption" to="/Contact">
             <div className="Titre_Contact menuSection">
-                <Link className="menuOption" to="/Contact">Contact</Link>
+              Contact
             </div>
+          </Link>
         </div>
     </div>
   );

@@ -1,4 +1,27 @@
-.texte_haut, .texte_bas {
+.menu_droite{
+  overflow: scroll;
+}
+
+  @media screen and (max-width : 550px)
+{
+
+  .texte_haut, .texte_bas {
+    display: none;
+  }
+  
+  .video {
+    text-align: center;
+    padding: 20px;
+    margin: 0;
+    /* background-color: white; */
+  }
+  
+  
+}
+
+@media screen and (min-width : 550px)
+{
+  .texte_haut, .texte_bas {
     text-align: center;
     padding: 10px;
     margin-top: 20px;
@@ -11,5 +34,9 @@
     padding: 20px;
     margin-left: 40px;
     margin-right: 40px;
-    background-color: white;
+    /* background-color: white; */
   }
+
+  
+  
+}
