@@ -4,7 +4,7 @@ import './App.css'
 import './MenuBar.css';
 
 function MenuBar() {
-  const [isMenuOpen, setIsMenuOpen] = useState(true);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleClickSandwich = useCallback(() => {
     const menuGauche = document.querySelector('.Menu_gauche');
@@ -17,26 +17,30 @@ function MenuBar() {
 
   return (
     <div className="Menu_gauche">
-      <div className="Titre_application">
-        <h1>SPEEDALBUM</h1>
-      </div>
-      <div id="boutonSandwich" onClick={handleClickSandwich}>
-        {/* Vous pouvez ajouter un icône de bouton sandwich ici */}
-      </div>
-      <div className='Menu_gauche_milieu'>
-        <div className="Titre_Nouveau_projet">
-          <Link to="/Nouveau_projet">Nouveau Projet</Link>
-          <Link to="/Connexion">CONNEXION</Link>
+        <div id="boutonSandwich" onClick={handleClickSandwich}>
+        
         </div>
-      </div>
-      <div className='Menu_gauche_bas'>
-        <div className="Titre_About">
-          <Link to="/About">About</Link>
+        <div className="Titre_application">
+            <h1>SPEEDALBUM</h1>
         </div>
-        <div className="Titre_Contact">
-          <Link to="/Contact">Contact</Link>
+      
+        <div className='Menu_gauche_milieu'>
+            <div className="Titre_Nouveau_projet menuSection">
+                <Link className="menuOption" to="/Nouveau_projet">Nouveau Projet</Link>
+            </div>
+            <div className="menuSection">
+                <Link className="menuOption" to="/Connexion">Connexion</Link>
+            </div>
         </div>
-      </div>
+
+        <div className='Menu_gauche_bas'>
+            <div className="Titre_About menuSection">
+                <Link className="menuOption" to="/About">About</Link>
+            </div>
+            <div className="Titre_Contact menuSection">
+                <Link className="menuOption" to="/Contact">Contact</Link>
+            </div>
+        </div>
     </div>
   );
 }

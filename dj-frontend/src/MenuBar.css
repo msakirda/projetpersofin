@@ -1,3 +1,7 @@
+a {
+    text-decoration: none;
+}
+
 @media screen and (min-width: 550px){
     
     .Menu_gauche{
@@ -7,6 +11,14 @@
         
     }
 
+        @keyframes bannerColorAnim{
+            0%{
+                background-color: #0063F8;
+            }
+            100%{
+                background-color: aquamarine;
+            }
+        }
     .Titre_application{
 
         text-align: center;
@@ -15,57 +27,46 @@
         justify-content: center;
         align-items: center;
         display: flex;
-        border-bottom: 3px solid black;
-        width: 80%;
-        margin-left: 10%; 
-        margin-right: 10%;
+        border-bottom: 1px solid blue;
+        font-family: American Typewriter, serif;
+        animation: bannerColorAnim 5s 0s infinite alternate;
+    }
+    .Titre_application:hover{
+        color: white;
     }
 
     .Menu_gauche_milieu {
         width: 100%; /* Prend toute la largeur de Menu_gauche */
         height: 70%; /* Ajustez la hauteur selon vos besoins */
         display: flex;
+        flex-direction: column;
+        border-bottom: 1px solid blue;
         
     }
 
-    .Titre_Nouveau_projet {
-        border-bottom: 3px solid black;
-        width: 80%;
-        margin-left: 10%; 
-        margin-right: 10%;
-        text-align: center;
-        display: flex;
-        flex-direction: column; /* Les éléments à l'intérieur seront empilés verticalement */
-        align-items: center; /* Pour centrer les éléments horizontalement */
+
+    .menuOption{
+        margin:20px
     }
-
-    .Titre_Nouveau_projet a {
-        margin: 10px 0; /* Ajoute un espace entre les liens */
-    }
-
-
+    
     .Menu_gauche_bas {
-        position: absolute;
-        bottom: 0;
-        width: 25%;
+        width: 100%;
         
         
     }
 
-    .Titre_About{
-        border-bottom: 3px solid black;
-        width: 80%;
-        margin-left: 10%; 
-        margin-right: 10%;
-        text-align: center;
+    .menuSection{
+        width: 100%;
+        padding-top:20px;
+        padding-bottom:20px;
     }
-
-    .Titre_Contact{   
-        text-align: center;
+    .menuSection:hover{
+        background-color: rgb(0, 195, 255);
+        
     }
-
-    .Titre_About,.Titre_Contact,.Titre_Nouveau_projet{
-    text-decoration: none;
+    .menuSection:hover a{
+        color: white;
+        
     }
 
     #boutonSandwich{
@@ -94,10 +95,8 @@
         align-items: center;
         display: flex;
         border-bottom: 3px solid black;
-        width: 80%;
-        margin-left: 10%; 
-        margin-right: 10%;
         display: none;
+        font-family: American Typewriter, serif;
     }
 
     .Menu_gauche_milieu {
@@ -136,8 +135,7 @@
     .Titre_About{
         border-bottom: 3px solid black;
         width: 80%;
-        margin-left: 10%; 
-        margin-right: 10%;
+        margin: 20px;
         text-align: center;
         display: none;
     }
