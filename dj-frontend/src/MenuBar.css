@@ -1,6 +1,7 @@
 a {
     text-decoration: none;
     font-family:  Chancery, cursive;
+    color: black;
 }
 
 @keyframes bannerColorAnim{
@@ -22,7 +23,7 @@ a {
     border-bottom: 1px solid blue;
     border-top: 1px solid blue;
     font-family: American Typewriter, serif;
-    animation: bannerColorAnim 5s 0s infinite alternate;
+    animation: bannerColorAnim 3s 0s infinite alternate;
 }
 .Titre_application:hover{
     color: white;
