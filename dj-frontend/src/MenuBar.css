@@ -1,5 +1,6 @@
 a {
     text-decoration: none;
+    font-family:  Chancery, cursive;
 }
 
 @media screen and (min-width: 550px){
