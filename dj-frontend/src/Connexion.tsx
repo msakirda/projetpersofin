@@ -6,6 +6,7 @@ import MenuBar from './MenuBar';
 
 
 function About() {
+    
     const navigate = useNavigate();
     const [identifiant, setIdentifiant] = useState('');
     const [nouveaumotdepasse, setNouveaumotdepasse] = useState('')
@@ -14,21 +15,28 @@ function About() {
 
     const [identifiantConnexion, setidentifiantConnexion] = useState('');
     const [nouveaumotdepasseConnexion, setnouveaumotdepasseConnexion] = useState('')
+
     
     const handleCreationCompte = useCallback(
         async()=>{
-            const response = await fetch("http://localhost:1337/api/userpersos", {
+            const userData = {
+                username: identifiant,
+                email: email,
+                provider: "local",  // Vous pouvez ajuster ceci en fonction de la stratégie d'authentification utilisée (par exemple, "local" pour une authentification locale)
+                password: nouveaumotdepasse,
+                resetPasswordToken: "",  // Vous pouvez laisser ceci vide pour le moment, ou le définir si nécessaire
+                confirmationToken: "",  // Vous pouvez laisser ceci vide pour le moment, ou le définir si nécessaire
+                confirmed: false,  // Par défaut, l'utilisateur n'est pas confirmé lors de la création
+                blocked: false,  // Par défaut, l'utilisateur n'est pas bloqué lors de la création
+                role: "public",  // Vous pouvez ajuster ceci en fonction du rôle souhaité pour l'utilisateur
+              };
+            
+            const response = await fetch("http://localhost:1337/users", {
                 method: "POST", 
                 headers: {
                   "Content-Type": "application/json",
                 },
-                body: JSON.stringify({
-                    identifiant: identifiant,
-                    nouveaumotdepasse: nouveaumotdepasse,
-                    resaisirmotdepasse: resaisirmotdepasse,
-                    email: email,
-
-                }) 
+                body: JSON.stringify(userData) 
             });
             const data = await response.json()
             console.log("reponse authentication", data);
@@ -40,7 +48,7 @@ function About() {
                 setIdentifiant("")
             }
 
-        }, [identifiant,nouveaumotdepasse, navigate]
+        }, [identifiant,nouveaumotdepasse, navigate, email]
     )
 
     return (

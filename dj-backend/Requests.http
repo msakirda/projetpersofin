@@ -1,0 +1,16 @@
+GET http://localhost:1337/users
+###
+POST http://localhost:1337/users
+Content-Type: application/json
+
+{
+  "username": "identifiant",
+  "email": "email@gmail.com",
+  "provider": "local",
+  "password": "nouveaumotdepasse",
+  "resetPasswordToken": "",
+  "confirmationToken": "",
+  "confirmed": false,
+  "blocked": false,
+  "role": "public"
+}

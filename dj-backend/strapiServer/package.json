@@ -1,5 +1,5 @@
 {
-  "name": "dj-backend",
+  "name": "strapi-server",
   "private": true,
   "version": "0.1.0",
   "description": "A Strapi application",
@@ -25,7 +25,7 @@
     "name": "A Strapi developer"
   },
   "strapi": {
-    "uuid": "6bc670f9-c8c8-45b8-b020-cd7c2bc096c5"
+    "uuid": "612f7728-b9a3-4d9f-bada-b2fec7ac649a"
   },
   "engines": {
     "node": ">=18.0.0 <=20.x.x",
