@@ -5,7 +5,7 @@ import React, { useCallback, useState } from 'react';
 import MenuBar from './MenuBar';
 
 
-function About() {
+function Connection(props:{co:boolean}) {
     
     const navigate = useNavigate();
     const [identifiant, setIdentifiant] = useState('');
@@ -22,38 +22,36 @@ function About() {
             const userData = {
                 username: identifiant,
                 email: email,
-                provider: "local",  // Vous pouvez ajuster ceci en fonction de la stratégie d'authentification utilisée (par exemple, "local" pour une authentification locale)
                 password: nouveaumotdepasse,
-                resetPasswordToken: "",  // Vous pouvez laisser ceci vide pour le moment, ou le définir si nécessaire
-                confirmationToken: "",  // Vous pouvez laisser ceci vide pour le moment, ou le définir si nécessaire
-                confirmed: false,  // Par défaut, l'utilisateur n'est pas confirmé lors de la création
-                blocked: false,  // Par défaut, l'utilisateur n'est pas bloqué lors de la création
-                role: "public",  // Vous pouvez ajuster ceci en fonction du rôle souhaité pour l'utilisateur
               };
-            
-            const response = await fetch("http://localhost:1337/users", {
-                method: "POST", 
+              
+              fetch('http://localhost:3000/users', {
+                method: 'POST',
                 headers: {
-                  "Content-Type": "application/json",
+                  'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(userData) 
-            });
-            const data = await response.json()
-            console.log("reponse authentication", data);
-            if(data.user){
-                navigate("/")
-            }
-            else {
-                setNouveaumotdepasse("")
-                setIdentifiant("")
-            }
+                body: JSON.stringify(userData),
+              })
+                .then(response => {
+                  if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                  }
+                  return response.json();
+                })
+                .then(data => {
+                  console.log('User created successfully:', data);
+                })
+                .catch(error => {
+                  console.error('Error creating user:', error);
+                });
+              
 
         }, [identifiant,nouveaumotdepasse, navigate, email]
     )
 
     return (
       <>
-        <MenuBar></MenuBar>
+        <MenuBar connected={props.co}></MenuBar>
         <div className='Menu_droite_connexion'>
 
             <div className='Fond_container'>
@@ -110,5 +108,5 @@ function About() {
     )
   }
   
-  export default About
+  export default Connection
   

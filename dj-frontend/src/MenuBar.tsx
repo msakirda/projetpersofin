@@ -3,7 +3,7 @@ import React, { useCallback, useState } from "react";
 import './App.css'
 import './MenuBar.css';
 
-function MenuBar() {
+function MenuBar(props:{connected:boolean}) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleClickSandwich = useCallback(() => {
@@ -27,16 +27,29 @@ function MenuBar() {
         </Link>
       
         <div className='Menu_gauche_milieu'>
-          <Link className="menuOption" to="/Nouveau_projet">
-            <div className="Titre_Nouveau_projet menuSection">
-                  Nouveau Projet
-            </div>
-          </Link>
-          <Link className="menuOption" to="/Connexion">
-            <div className="menuSection">
-                  Connexion
-            </div>
-          </Link>
+                                {props.connected ? (
+                              // Si l'utilisateur est connecté, afficher le lien vers la page de profil
+                              <Link className="menuOption" to="/Profil">
+                                <div className="menuSection">
+                                  {/* Composant de profil (image, etc.) */}
+                                  <img src="prof.png" alt="Profil" />
+                                </div>
+                              </Link>
+                            ) : (
+                              // Sinon, afficher les options de connexion
+                              <div className='Menu_gauche_milieu'>
+                                <Link className="menuOption" to="/Nouveau_projet">
+                                  <div className="Titre_Nouveau_projet menuSection">
+                                    Nouveau Projet
+                                  </div>
+                                </Link>
+                                <Link className="menuOption" to="/Connexion">
+                                  <div className="menuSection">
+                                    Connexion
+                                  </div>
+                                </Link>
+                              </div>
+                            )}
         </div>
 
         <div className='Menu_gauche_bas'>

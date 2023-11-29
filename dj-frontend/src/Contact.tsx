@@ -3,12 +3,12 @@ import React from 'react';
 import MenuBar from './MenuBar';
 
 
-function Contact() {
+function Contact(props:{co:boolean}) {
     
 
     return (
       <>
-        <MenuBar></MenuBar>
+        <MenuBar connected={props.co}></MenuBar>
         <div>
             <h1>Contact</h1>
         </div>

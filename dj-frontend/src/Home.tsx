@@ -5,12 +5,12 @@ import MenuBar from './MenuBar'
 
 
 
-function Home() {
+function Home(props:{co:boolean}) {
     
 
     return (
       <>
-          <MenuBar></MenuBar>
+          <MenuBar connected={props.co}></MenuBar>
           <div className="menu_droite">
             <div className="texte_haut">
               <p>Texte en haut Iamque lituis cladium concrepantibus internarum non celate ut antea turbidum saeviebat ingenium a veri 
