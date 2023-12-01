@@ -5,35 +5,40 @@ import About from './About';
 import Contact from './Contact';
 import Connexion from './Connexion';
 import Profil from "./Profil"
+import Sharing from './Sharing';
 
-let connected = false;
+
 
 const router = createBrowserRouter([
   
   {
     path: "/",
-    element: <Home co={connected}/>,
+    element: <Home />,
   },
 
   {
     path: "/Nouveau_projet",
-    element: <Nouveau_projet co={connected}/>,
+    element: <Nouveau_projet />,
   },
   {
     path: "/About",
-    element:<About co={connected}/>
+    element:<About />
   },
   {
     path: "/Contact",
-    element:<Contact co={connected}/>
+    element:<Contact />
   },
   {
     path: "/Connexion",
-    element:<Connexion co={connected}/>
+    element:<Connexion />
   },
   {
     path: "/Profil",
-    element:<Profil co={connected}/>
+    element:<Profil />
+  },
+  {
+    path: "/Sharing",
+    element:<Sharing />
   }
   
   

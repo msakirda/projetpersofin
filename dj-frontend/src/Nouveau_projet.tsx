@@ -3,12 +3,12 @@ import React from 'react';
 import MenuBar from './MenuBar';
 
 
-function Nouveau_projet(props:{co:boolean}) {
+function Nouveau_projet() {
     
 
     return (
       <>
-        <MenuBar connected={props.co}></MenuBar>
+        <MenuBar connected={false} ></MenuBar>
         <div>
             <h1>Nouveau Projet</h1>
         </div>

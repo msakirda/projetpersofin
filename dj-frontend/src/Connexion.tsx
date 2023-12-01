@@ -5,7 +5,7 @@ import React, { useCallback, useState } from 'react';
 import MenuBar from './MenuBar';
 
 
-function Connection(props:{co:boolean}) {
+function Connection() {
     
     const navigate = useNavigate();
     const [identifiant, setIdentifiant] = useState('');
@@ -16,7 +16,8 @@ function Connection(props:{co:boolean}) {
     const [identifiantConnexion, setidentifiantConnexion] = useState('');
     const [nouveaumotdepasseConnexion, setnouveaumotdepasseConnexion] = useState('')
 
-    
+  
+
     const handleCreationCompte = useCallback(
         async()=>{
             const userData = {
@@ -25,33 +26,76 @@ function Connection(props:{co:boolean}) {
                 password: nouveaumotdepasse,
               };
               
-              fetch('http://localhost:3000/users', {
+              fetch(`http://localhost:3000/users/create/${identifiant}`, {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(userData),
               })
-                .then(response => {
-                  if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
+              .then(response => {
+                if (!response.ok) {
+                  throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                
+
+                return response.json();
+              })
+              .then(data => {
+                  console.log(data);
+                  if(!data.exists)
+                  {
+                    setIdentifiant('');
+                    setNouveaumotdepasse('');
+                    setResaisirmotdepasse('');
+                    setEmail('');
+                    //ici , passer a letat connecté pour toute l app
+                    navigate('/Profil')
                   }
-                  return response.json();
-                })
-                .then(data => {
-                  console.log('User created successfully:', data);
-                })
-                .catch(error => {
-                  console.error('Error creating user:', error);
-                });
+              })
+              .catch(error => {
+                console.error('Error creating user:', error);
+              });
               
 
         }, [identifiant,nouveaumotdepasse, navigate, email]
     )
 
+    const handleClickConnection = useCallback(() => {
+        fetch('http://localhost:3000/users/connect', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            username: identifiantConnexion,
+            password: nouveaumotdepasseConnexion,
+          }),
+        })
+          .then(response => {
+            if (!response.ok) {
+              throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+          })
+          .then(data => {
+            console.log(data);
+            if (data.signedUp) {
+              setidentifiantConnexion('');
+              setnouveaumotdepasseConnexion('');
+              // ici, passer à l'état connecté pour toute l'app
+              navigate('/Profil');
+            }
+          })
+          .catch(error => {
+            console.error('Error connecting user:', error);
+          });
+      }, [identifiantConnexion, nouveaumotdepasseConnexion, navigate]);
+      
+
     return (
       <>
-        <MenuBar connected={props.co}></MenuBar>
+        <MenuBar connected={false}></MenuBar>
         <div className='Menu_droite_connexion'>
 
             <div className='Fond_container'>
@@ -95,7 +139,7 @@ function Connection(props:{co:boolean}) {
                         <label > Mot de passe:</label>
                         <input  type='password' value={nouveaumotdepasseConnexion} onChange={(e) => setnouveaumotdepasseConnexion(e.target.value)}/>
                     </div>
-                    <button className='boutonConnexion'>
+                    <button className='boutonConnexion' onClick={handleClickConnection}>
                         Connexion
                     </button>
                     <div className='promptConnexion'>

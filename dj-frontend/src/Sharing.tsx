@@ -3,17 +3,18 @@ import React from 'react';
 import MenuBar from './MenuBar';
 
 
-function Profil() {
+function Sharing() {
     
 
     return (
       <>
         <MenuBar connected={false}></MenuBar>
         <div>
-            <h1>Profil</h1>
+            <h1>Share your diapo !</h1>
         </div>
       </>
     )
   }
   
-  export default Profil
+  export default Sharing
+  

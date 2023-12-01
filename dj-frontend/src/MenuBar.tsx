@@ -5,6 +5,7 @@ import './MenuBar.css';
 
 function MenuBar(props:{connected:boolean}) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [userConnected , setUserConnected] = useState("#UserIncognito")
 
   const handleClickSandwich = useCallback(() => {
     const menuGauche = document.querySelector('.Menu_gauche');
@@ -27,29 +28,38 @@ function MenuBar(props:{connected:boolean}) {
         </Link>
       
         <div className='Menu_gauche_milieu'>
-                                {props.connected ? (
-                              // Si l'utilisateur est connecté, afficher le lien vers la page de profil
-                              <Link className="menuOption" to="/Profil">
-                                <div className="menuSection">
-                                  {/* Composant de profil (image, etc.) */}
-                                  <img src="prof.png" alt="Profil" />
-                                </div>
-                              </Link>
-                            ) : (
-                              // Sinon, afficher les options de connexion
-                              <div className='Menu_gauche_milieu'>
-                                <Link className="menuOption" to="/Nouveau_projet">
-                                  <div className="Titre_Nouveau_projet menuSection">
-                                    Nouveau Projet
-                                  </div>
-                                </Link>
-                                <Link className="menuOption" to="/Connexion">
-                                  <div className="menuSection">
-                                    Connexion
-                                  </div>
-                                </Link>
-                              </div>
-                            )}
+        
+                                {props.connected ? 
+                                (
+                                  // Si l'utilisateur est connecté, afficher le lien vers la page de profil
+                                  <Link className="menuOption" to="/Profil">
+                                    <div className="menuSection">
+                                      {/* Composant de profil (image, etc.) */}
+                                      <img id="image_profile" src="prof.png" alt="Profil" />
+                                      {userConnected}
+                                    </div>
+                                  </Link>
+                                ) 
+                                : (
+                                  // Sinon, afficher les options de connexion
+                                  
+                                    <Link className="menuOption" to="/Connexion">
+                                      <div className="menuSection">
+                                        Connexion
+                                      </div>
+                                    </Link>
+                                )}
+            <Link className="menuOption" to="/Nouveau_projet">
+              <div className="Titre_Nouveau_projet menuSection">
+                New Project
+              </div>
+            </Link>
+            <Link className="menuOption" to="/Sharing">
+              <div className="menuSection">
+                Sharing
+              </div>
+            </Link>
+
         </div>
 
         <div className='Menu_gauche_bas'>

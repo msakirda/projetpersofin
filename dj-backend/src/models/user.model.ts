@@ -1,10 +1,6 @@
 // src/models/user.model.ts
 import { Sequelize, DataTypes, Model } from 'sequelize';
-
-const sequelize = new Sequelize({
-  dialect: 'sqlite',
-  storage: 'db.sqlite',
-});
+import {sequelize} from '../index';
 
 class User extends Model {
   public username!: string;

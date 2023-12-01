@@ -12,19 +12,21 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.sequelize = void 0;
 const express_1 = __importDefault(require("express"));
 const sequelize_1 = require("sequelize");
-const user_model_1 = __importDefault(require("./models/user.model"));
+const cors = require('cors');
 // Création de l'application Express
 const app = (0, express_1.default)();
 const port = 3000;
 // Configuration de Sequelize pour SQLite
-const sequelize = new sequelize_1.Sequelize({
+exports.sequelize = new sequelize_1.Sequelize({
     dialect: 'sqlite',
     storage: './db.sqlite',
     logging: console.log, // Active les logs Sequelize
 });
-sequelize.sync({ force: true })
+const user_model_1 = __importDefault(require("./models/user.model"));
+exports.sequelize.sync()
     .then(() => {
     // Démarrage du serveur Express après la synchronisation
     app.listen(port, () => {
@@ -36,34 +38,64 @@ sequelize.sync({ force: true })
 });
 // Middleware pour traiter les requêtes au format JSON
 app.use(express_1.default.json());
-// Routes
-app.post('/users', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log("ici, reçu depuis le client: ", req.body);
-    const data = req.body;
-    try {
-        // Création d'un nouvel utilisateur dans la base de données
-        const newUser = yield user_model_1.default.create(data);
-        // Renvoi de la réponse avec l'ID du nouvel utilisateur
-        res.json(req.body);
+app.use(cors());
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', 'http://127.0.0.1:5173');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    // Handle preflight requests
+    if (req.method === 'OPTIONS') {
+        res.status(200).end();
+        return;
     }
-    catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Erreur lors de l\'ajout de l\'utilisateur dans la base de données.' });
+    next();
+});
+// Change the route method to 'post'
+app.post('/users/connect', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { username, password } = req.body;
+    const user = yield user_model_1.default.findByPk(username);
+    if (user) {
+        if (user.password !== password) {
+            res.json({ signedUp: false, message: "Mauvais combo username / password" });
+        }
+        else {
+            res.json({ signedUp: true, message: "Connection réussie" });
+        }
+    }
+    else {
+        res.json({ signedUp: false, message: "Cet utilisateur n'existe pas dans la BDD" });
     }
 }));
-app.get('/users/:id/exists', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const userId = req.params.id;
+app.post('/users/create/:username', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         // Recherche de l'utilisateur dans la base de données
-        const user = yield user_model_1.default.findByPk(userId);
+        const user = yield user_model_1.default.findByPk(req.params.username);
         if (!user) {
-            return res.json({ exists: false });
+            // Create a new user only if the user doesn't exist
+            const newUser = yield user_model_1.default.create({
+                username: req.params.username, // Assuming 'username' is a required field
+                email: req.body.email, // Assuming 'email' is a required field
+                password: req.body.password, // Assuming 'password' is a required field
+            });
+            return res.json({ exists: false, response: `Utilisateur [${req.params.username}] créé avec succès.` });
         }
-        // Renvoi true si l'utilisateur existe, sinon false
-        res.json({ exists: true });
+        else {
+            res.json({ exists: true, response: "Cet Utilisateur existe déjà, création de compte impossible." });
+        }
     }
     catch (error) {
-        console.error('Erreur lors de la recherche de l\'utilisateur dans la base de données:', error);
-        res.status(500).json({ error: 'Erreur lors de la recherche de l\'utilisateur dans la base de données.' });
+        console.error('Error creating or checking user:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}));
+app.get('/users/exists/:username', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    // Recherche de l'utilisateur dans la base de données
+    const user = yield user_model_1.default.findByPk(req.params.username);
+    if (!user) {
+        const newUser = yield user_model_1.default.create(req.body);
+        return res.json({ exists: false, response: `Utilisateur [${user}] créé avec succès.` });
+    }
+    else {
+        res.json({ exists: true, response: "Utilisateur éxiste déja , création de compte impossible." });
     }
 }));
