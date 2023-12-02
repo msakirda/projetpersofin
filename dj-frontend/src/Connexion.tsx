@@ -12,10 +12,14 @@ function Connection() {
     const [nouveaumotdepasse, setNouveaumotdepasse] = useState('')
     const [resaisirmotdepasse,setResaisirmotdepasse] = useState('')
     const [email,setEmail] = useState('')
+    const [serverResponseCreation , setserverResponseCreation] = useState("")
 
     const [identifiantConnexion, setidentifiantConnexion] = useState('');
     const [nouveaumotdepasseConnexion, setnouveaumotdepasseConnexion] = useState('')
+    const [serverResponseConnection , setserverResponseConnection] = useState("")
 
+    const [showPromptConnexion , setShewPromptConnexion] = useState(false);
+    const [showPromptCreation , setShewPromptCreation] = useState(false);
   
 
     const handleCreationCompte = useCallback(
@@ -25,7 +29,27 @@ function Connection() {
                 email: email,
                 password: nouveaumotdepasse,
               };
+
+              if(!identifiant || !nouveaumotdepasse || !resaisirmotdepasse || !email)
+              {
+                setserverResponseCreation("\nCertains champs ne sont pas remplis.");
+                setShewPromptCreation(true);
+                return;
+              }
+              else if(nouveaumotdepasse !== resaisirmotdepasse)
+              {
+                setserverResponseCreation("\nLes deux mots de passe ne sont pas identiques.");
+                setShewPromptCreation(true);
+                return;
+                }
+              else if(!email.includes('@'))
+              {
+                setserverResponseCreation("\nEmail au mauvais format.");
+                setShewPromptCreation(true);
+                return;
+              }
               
+
               fetch(`http://localhost:3000/users/create/${identifiant}`, {
                 method: 'POST',
                 headers: {
@@ -42,16 +66,22 @@ function Connection() {
                 return response.json();
               })
               .then(data => {
-                  console.log(data);
-                  if(!data.exists)
-                  {
+                console.log(data);
+                if(!data.exists)
+                {
                     setIdentifiant('');
                     setNouveaumotdepasse('');
                     setResaisirmotdepasse('');
                     setEmail('');
                     //ici , passer a letat connecté pour toute l app
-                    navigate('/Profil')
-                  }
+                    console.log(data.response);
+                    
+                    setserverResponseCreation(data.response);
+                    setShewPromptCreation(true)
+                    setTimeout( ()=>{
+                        navigate('/Profil')
+                    } , 1000)
+                }
               })
               .catch(error => {
                 console.error('Error creating user:', error);
@@ -62,6 +92,8 @@ function Connection() {
     )
 
     const handleClickConnection = useCallback(() => {
+        
+
         fetch('http://localhost:3000/users/connect', {
           method: 'POST',
           headers: {
@@ -81,10 +113,18 @@ function Connection() {
           .then(data => {
             console.log(data);
             if (data.signedUp) {
-              setidentifiantConnexion('');
-              setnouveaumotdepasseConnexion('');
-              // ici, passer à l'état connecté pour toute l'app
-              navigate('/Profil');
+                setidentifiantConnexion('');
+                setnouveaumotdepasseConnexion('');
+                // ici, passer à l'état connecté pour toute l'app
+                setserverResponseConnection(data.message);
+                setShewPromptConnexion(true)
+                setTimeout( ()=>{
+                    navigate('/Profil')
+                } , 1000)
+            }
+            else{
+                setserverResponseConnection(data.message)
+                setShewPromptConnexion(true)
             }
           })
           .catch(error => {
@@ -99,11 +139,11 @@ function Connection() {
         <div className='Menu_droite_connexion'>
 
             <div className='Fond_container'>
-                <div className='Titre_connexion'> 
-                    <h1>Créer un compte</h1>
-                </div>
 
                 <div className='Information_de_connexion'>
+                    <div className='Titre_connexion'> 
+                        <h1>Créer un compte</h1>
+                    </div>
                     <div className='inputConnexion'>
                         <label > Identifiant:</label>
                         <input  className='inputConnectionInput' type='text' value={identifiant} onChange={(e) => setIdentifiant(e.target.value)}/>
@@ -120,17 +160,19 @@ function Connection() {
                         <label > Saisir e-mail:</label>
                         <input  className='inputConnectionInput' type='mail' value={email} onChange={(e)=>setEmail(e.target.value)}/>
                     </div>
-                    <button className='boutonCreerCompte' onClick={handleCreationCompte}>Créer</button>
-                    <div className='promptCreationCompte'>
-
+                    <div className='zoneValidationCreationCompte'>
+                        <button className='boutonCreerCompte' onClick={handleCreationCompte}>Créer</button>
+                        <div className='promptCreationCompte'  style={{ display: showPromptCreation ? 'block' : 'none' }}>
+                            {serverResponseCreation}
+                        </div>
                     </div>
                 </div>
 
-                <div className='Titre_connexion2'> 
-                    <h1>Se connecter</h1>
-                </div>
 
                 <div className='Information_de_connexion_connexion'>
+                    <div className='Titre_connexion2'> 
+                        <h1>Se connecter</h1>
+                    </div>
                     <div className='inputConnexion'>
                         <label > Identifiant:</label>
                         <input  type='text' value={identifiantConnexion} onChange={(e) => setidentifiantConnexion(e.target.value)}/>
@@ -139,11 +181,13 @@ function Connection() {
                         <label > Mot de passe:</label>
                         <input  type='password' value={nouveaumotdepasseConnexion} onChange={(e) => setnouveaumotdepasseConnexion(e.target.value)}/>
                     </div>
-                    <button className='boutonConnexion' onClick={handleClickConnection}>
-                        Connexion
-                    </button>
-                    <div className='promptConnexion'>
-
+                    <div className='zoneValidationConnexion'>
+                        <button className='boutonConnexion' onClick={handleClickConnection}>
+                            Connexion
+                        </button>
+                        <div className='promptConnexion' style={{ display: showPromptConnexion ? 'block' : 'none' }} >
+                            {serverResponseConnection}
+                        </div>
                     </div>
                 </div>
             </div>

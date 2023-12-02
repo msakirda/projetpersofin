@@ -56,14 +56,14 @@ app.post('/users/connect', (req, res) => __awaiter(void 0, void 0, void 0, funct
     const user = yield user_model_1.default.findByPk(username);
     if (user) {
         if (user.password !== password) {
-            res.json({ signedUp: false, message: "Mauvais combo username / password" });
+            res.json({ signedUp: false, message: "Mauvais combo username / password." });
         }
         else {
-            res.json({ signedUp: true, message: "Connection réussie" });
+            res.json({ signedUp: true, message: "Connection réussie." });
         }
     }
     else {
-        res.json({ signedUp: false, message: "Cet utilisateur n'existe pas dans la BDD" });
+        res.json({ signedUp: false, message: "Cet utilisateur n'existe pas dans la BDD." });
     }
 }));
 app.post('/users/create/:username', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -77,7 +77,7 @@ app.post('/users/create/:username', (req, res) => __awaiter(void 0, void 0, void
                 email: req.body.email, // Assuming 'email' is a required field
                 password: req.body.password, // Assuming 'password' is a required field
             });
-            return res.json({ exists: false, response: `Utilisateur [${req.params.username}] créé avec succès.` });
+            return res.json({ exists: false, response: `Compte Utilisateur [${req.params.username}] créé avec succès.` });
         }
         else {
             res.json({ exists: true, response: "Cet Utilisateur existe déjà, création de compte impossible." });
@@ -86,16 +86,5 @@ app.post('/users/create/:username', (req, res) => __awaiter(void 0, void 0, void
     catch (error) {
         console.error('Error creating or checking user:', error);
         res.status(500).json({ error: 'Internal Server Error' });
-    }
-}));
-app.get('/users/exists/:username', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    // Recherche de l'utilisateur dans la base de données
-    const user = yield user_model_1.default.findByPk(req.params.username);
-    if (!user) {
-        const newUser = yield user_model_1.default.create(req.body);
-        return res.json({ exists: false, response: `Utilisateur [${user}] créé avec succès.` });
-    }
-    else {
-        res.json({ exists: true, response: "Utilisateur éxiste déja , création de compte impossible." });
     }
 }));

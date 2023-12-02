@@ -52,12 +52,12 @@ app.post('/users/connect', async (req: Request, res: Response) => {
 
   if (user) {
     if (user.password !== password) {
-      res.json({ signedUp: false, message: "Mauvais combo username / password" });
+      res.json({ signedUp: false, message: "Mauvais combo username / password." });
     } else {
-      res.json({ signedUp: true, message: "Connection réussie" });
+      res.json({ signedUp: true, message: "Connection réussie." });
     }
   } else {
-    res.json({ signedUp: false, message: "Cet utilisateur n'existe pas dans la BDD" });
+    res.json({ signedUp: false, message: "Cet utilisateur n'existe pas dans la BDD." });
   }
 });
 
@@ -74,7 +74,7 @@ app.post('/users/create/:username', async (req: Request, res: Response) => {
         password: req.body.password, // Assuming 'password' is a required field
       });
 
-      return res.json({ exists: false, response: `Utilisateur [${req.params.username}] créé avec succès.` });
+      return res.json({ exists: false, response: `Compte Utilisateur [${req.params.username}] créé avec succès.` });
     } else {
       res.json({ exists: true, response: "Cet Utilisateur existe déjà, création de compte impossible." });
     }
@@ -85,21 +85,7 @@ app.post('/users/create/:username', async (req: Request, res: Response) => {
 });
 
 
-app.get('/users/exists/:username', async (req: Request, res: Response) => {
-
-    // Recherche de l'utilisateur dans la base de données
-    const user = await User.findByPk(req.params.username) as User | null;
-
-
-    if (!user) {
-      const newUser = await User.create(req.body);
-      return res.json({ exists: false , response : `Utilisateur [${user}] créé avec succès.`});
-    }
-    else
-    {
-        res.json({ exists: true , response : "Utilisateur éxiste déja , création de compte impossible."});
-    }
   
-});
+
 
 
