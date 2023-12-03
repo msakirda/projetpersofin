@@ -11,36 +11,16 @@ function Home() {
     return (
       <>
           <MenuBar connected={false}></MenuBar>
-          <div className="menu_droite">
-            <div className="texte_haut">
-              <p>Texte en haut Iamque lituis cladium concrepantibus internarum non celate ut antea turbidum saeviebat ingenium a veri 
-                consideratione detortum et nullo inpositorum vel conpositer inquirente nec discernente a societate n
-                oxiorum insontes velut exturbatum e is fas omne discessit, et causarum legitima silente defensione carnifex rapinar
-                orientales provincias, quas recensere puto nunc 
-                oportunum absque Mesopotamia digesta, cum bella Parthica dicerentur, et Aegypto, quam necessario aliud reieci ad tempus.
+          <div className='right_part'>
+              <p className='texte_haut'>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
               </p>
-            </div>
-
-            <div className="video">
-              {/* Remplacez le lien de la vidéo par le vôtre */}
-              <iframe width="100%" height="315" src="https://www.youtube.com/embed/VIDEO_ID" frameBorder="0" allowFullScreen></iframe>
-            </div>
-
-            <div className="texte_bas">
-              <p>Texte en bas Utque proeliorum periti rectores primo catervas densas opponunt et fortes, deinde leves armaturas, 
-                post iaculatores ultimasque subsidiales acies, si fors adegerit, iuvaturas, ita praepositis urbanae familiae suspensae digerentibus
-                sollicite, quos insignes faciunt virgae dexteris aptatae velut tessera data castrensi iuxta vehiculi frontem omne textrinum incedit
-                : huic atratum coquinae iungitur ministerium, dein totum promiscue servitium cum otiosis plebeiis de vicinitate coniunctis: postrema 
-                multitudo spadonum a senibus in pueros desinens, obluridi distortaque lineamentorum conpage deformes, ut quaqua incesserit quisquam ce
-                rnens mutilorum hominum agmina detestetur memoriam Samiramidis reginae illius veteris, quae teneros mares castravit omnium prima velut 
-                vim iniectans naturae, eandemque ab instituto cursu retorquens, quae inter ipsa oriundi crepundia per primigenios seminis fontes tacita q
-                uodam modo lege vias propagandae posteritatis ostendit.
-
-                raefuit, cum Apodemio agente in rebus milites ducens, quos beneficiis suis oppigneratos elegerat imperator certus nec praemiis
-                nec miseratione ulla posse deflecti.
+              <iframe width="560" height="315" src="https://www.youtube.com/embed/_4EjGXRDOH0?si=DCqxV4KPlepE5_D5" title="YouTube video player"  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" ></iframe>              
+              <p className='texte_bas'>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
               </p>
-            </div>
-        </div>
+          </div>
+        
       </>
     )
   }

@@ -12,11 +12,11 @@ function Connection() {
     const [nouveaumotdepasse, setNouveaumotdepasse] = useState('')
     const [resaisirmotdepasse,setResaisirmotdepasse] = useState('')
     const [email,setEmail] = useState('')
-    const [serverResponseCreation , setserverResponseCreation] = useState("")
+    const [serverResponseCreation , setserverResponseCreation] = useState([""])
 
     const [identifiantConnexion, setidentifiantConnexion] = useState('');
     const [nouveaumotdepasseConnexion, setnouveaumotdepasseConnexion] = useState('')
-    const [serverResponseConnection , setserverResponseConnection] = useState("")
+    const [serverResponseConnection , setserverResponseConnection] = useState([""])
 
     const [showPromptConnexion , setShewPromptConnexion] = useState(false);
     const [showPromptCreation , setShewPromptCreation] = useState(false);
@@ -30,21 +30,22 @@ function Connection() {
                 password: nouveaumotdepasse,
               };
 
+              setserverResponseCreation([]);
               if(!identifiant || !nouveaumotdepasse || !resaisirmotdepasse || !email)
               {
-                setserverResponseCreation("\nCertains champs ne sont pas remplis.");
+                setserverResponseCreation([..."Certains champs ne sont pas remplis."]);
                 setShewPromptCreation(true);
                 return;
               }
-              else if(nouveaumotdepasse !== resaisirmotdepasse)
+               if(nouveaumotdepasse !== resaisirmotdepasse)
               {
-                setserverResponseCreation("\nLes deux mots de passe ne sont pas identiques.");
+                setserverResponseCreation([..."Les deux mots de passe ne sont pas identiques."]);
                 setShewPromptCreation(true);
                 return;
                 }
-              else if(!email.includes('@'))
+               if(!email.includes('@'))
               {
-                setserverResponseCreation("\nEmail au mauvais format.");
+                setserverResponseCreation([..."Email au mauvais format."]);
                 setShewPromptCreation(true);
                 return;
               }
@@ -92,7 +93,15 @@ function Connection() {
     )
 
     const handleClickConnection = useCallback(() => {
-        
+
+        setserverResponseConnection([]);
+        if(!identifiantConnexion || !nouveaumotdepasseConnexion)
+        {
+            setserverResponseConnection([..."Certains champs ne sont pas remplis."]);
+            setShewPromptConnexion(true);
+            return;
+        }
+
 
         fetch('http://localhost:3000/users/connect', {
           method: 'POST',

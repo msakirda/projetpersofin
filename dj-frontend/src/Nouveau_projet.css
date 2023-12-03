@@ -1,0 +1,44 @@
+/* Nouveau_projet.css */
+.right_part {
+    width: 75%;
+    height: 100%;
+  }
+  
+  .scrollerBack {
+    width: 95%;
+    height: 95%;
+    overflow: hidden;
+    background-color: darkgrey;
+    display: flex;
+    align-items: center;
+    border-radius: 2%;
+    padding: 10px;
+  }
+  
+  .scrollerContainer {
+    display: flex;
+    transition: transform 0.5s ease;
+    height: 95%;
+    overflow-x: auto;
+  }
+  
+  .onePage {
+    width: 100%; /* Set the width to 100% */
+    height: 100%;
+    background-color: white;
+    margin-right: 10px;
+    flex-shrink: 0; /* Prevent pages from shrinking */
+  }
+  
+  /* Optional: Style the navigation buttons */
+  .buttonGoRight,
+  .buttonGoLeft {
+    width: 40px;
+    height: 40px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+  

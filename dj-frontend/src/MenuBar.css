@@ -49,15 +49,16 @@ a {
     width: 40px;
     height: auto;
 }
+.Menu_gauche{
+    width: 25%;
+    height: 100%;
+    background: linear-gradient(#0063F8,white);
+    
+}
 
 @media screen and (min-width: 550px){
     
-    .Menu_gauche{
-        width: 400px;
-        height: 100%;
-        background: linear-gradient(#0063F8,white);
-        
-    }
+    
 
         
 
@@ -102,12 +103,7 @@ a {
 /* /////////////////////////////////////////////////////////////////////////////////////////////////// */
 
 @media screen and (max-width: 549px){
-    
-    .Menu_gauche{
-        width: 20%;
-        height: 100%;
-        background: linear-gradient(#0063F8,white);
-    }
+
 
 
     .Titre_application{
