@@ -84,6 +84,7 @@
     .Titre_connexion,.Titre_connexion2{
         background-color: white;
         padding: 5%;
+        width: 100%;
     }
 
 
@@ -131,7 +132,23 @@
         padding: 0;
         
     }
+    .inputConnexion {
+        width: 80%;
+    }
     .inputConnexion *{
         display: block;
+    }
+    .inputConnectionInput
+    {
+        width: 100%;
+    }
+    .promptCreationCompte , .promptConnexion{
+        
+        background-color: white;
+        border: 1px solid red;
+        width: 80%;
+        height: auto;
+        padding: 5%;
+        margin: 3%;
     }
 }
