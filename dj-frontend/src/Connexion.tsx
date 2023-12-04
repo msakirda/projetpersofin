@@ -184,11 +184,11 @@ function Connection() {
                     </div>
                     <div className='inputConnexion'>
                         <label > Identifiant:</label>
-                        <input  type='text' value={identifiantConnexion} onChange={(e) => setidentifiantConnexion(e.target.value)}/>
+                        <input  className='inputConnectionInput' type='text' value={identifiantConnexion} onChange={(e) => setidentifiantConnexion(e.target.value)}/>
                     </div>
                     <div className='inputConnexion'>
                         <label > Mot de passe:</label>
-                        <input  type='password' value={nouveaumotdepasseConnexion} onChange={(e) => setnouveaumotdepasseConnexion(e.target.value)}/>
+                        <input   className='inputConnectionInput' type='password' value={nouveaumotdepasseConnexion} onChange={(e) => setnouveaumotdepasseConnexion(e.target.value)}/>
                     </div>
                     <div className='zoneValidationConnexion'>
                         <button className='boutonConnexion' onClick={handleClickConnection}>
