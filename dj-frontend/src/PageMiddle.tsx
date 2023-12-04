@@ -1,18 +1,14 @@
-import { Link } from 'react-router-dom'
-import './Nouveau_projet.css';
+// PageMiddle.tsx
+
+import React from 'react';
 
 
+const PageMiddle = () => {
+  return (
+    <div className='onePage' >
 
-function PageMiddle() {
-    
+    </div>
+  );
+};
 
-    return (
-      <>
-          <div className='onePage'>
-          </div>
-        
-      </>
-    )
-  }
-  
-  export default PageMiddle
+export default PageMiddle;

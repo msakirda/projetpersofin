@@ -1,0 +1,40 @@
+@media screen and (max-width : 549px){
+
+    section  {
+        background-color: #fff;
+
+        overflow-y:scroll;
+        width: 100%;
+    }
+
+    header {
+        background-color: #fff;
+
+    }
+
+
+}
+
+@media screen and (min-width : 550px){
+
+    section  {
+
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        height: 50%;
+        width: 80%;
+        overflow-y: auto;
+    }
+    
+    header{
+        /* padding: 20px; */
+        background-color: #fff;
+        margin: 3%;
+        padding: 3%;
+        height: 10%;
+
+    }
+    
+}
