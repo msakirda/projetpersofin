@@ -25,7 +25,36 @@
 
 
 
-.username_part , .formPart{
-    width: 70%;
+ .formPart{
+    width: 90%;
+    height: 70%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+}
+
+ .message_part{
+    width: 90%;
+    height: 80%;
+    display: block;
+    margin: 3%;
+}
+.username_part
+{
+    width: 50%;
     height: 20%;
+}
+#message {
+    width: 100%;
+    height: 100%;
+}
+
+#userName{
+    width: 70%;
+    height: 25%;
+}
+
+label{
+    margin: 3%;
 }

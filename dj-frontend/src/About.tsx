@@ -9,7 +9,7 @@ function About() {
 
     return (
       <>
-        <MenuBar connected={false}></MenuBar>
+        <MenuBar ></MenuBar>
       
           
       <div className='right_part'>

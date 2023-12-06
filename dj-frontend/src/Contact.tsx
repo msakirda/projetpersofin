@@ -34,17 +34,16 @@ const Contact = () => {
 
   return (
     <>
-      <MenuBar connected={false}></MenuBar>
+      <MenuBar ></MenuBar>
       <div className='right_menu'>
         <div className='allContactForm'>
           <h1>Contactez-nous</h1>
           <form onSubmit={handleSubmit} className='formPart'>
             <div className='username_part'>
               <label htmlFor="userName">Nom d'utilisateur:</label>
+              <br />
               <input
                 type="text"
-                width={"80%"}
-                height={"30%"}
                 id="userName"
                 name="userName"
                 value={formData.userName}
@@ -52,8 +51,9 @@ const Contact = () => {
                 required
               />
             </div>
-            <div>
+            <div className='message_part'>
               <label htmlFor="message">Message:</label>
+              <br />
               <textarea
                 id="message"
                 name="message"

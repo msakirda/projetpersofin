@@ -70,6 +70,14 @@ function Connection() {
                 console.log(data);
                 if(!data.exists)
                 {
+                    setserverResponseCreation(data.response);
+                    if(!localStorage.getItem('token'))
+                    {
+                      localStorage.setItem('token', data.token);
+                      localStorage.setItem('userConnectedUsername' , identifiant)
+                      localStorage.setItem('userConnectedPassword' , nouveaumotdepasse)
+                    }
+
                     setIdentifiant('');
                     setNouveaumotdepasse('');
                     setResaisirmotdepasse('');
@@ -77,7 +85,7 @@ function Connection() {
                     //ici , passer a letat connecté pour toute l app
                     console.log(data.response);
                     
-                    setserverResponseCreation(data.response);
+                    
                     setShewPromptCreation(true)
                     setTimeout( ()=>{
                         navigate('/Profil')
@@ -122,11 +130,21 @@ function Connection() {
           .then(data => {
             console.log(data);
             if (data.signedUp) {
+                setserverResponseConnection(data.message);
+                setShewPromptConnexion(true)
+                setserverResponseCreation(data.response);
+                if(!localStorage.getItem('token'))
+                {
+                  localStorage.setItem('token', data.token);
+                  localStorage.setItem('userConnectedUsername' , identifiant)
+                  localStorage.setItem('userConnectedPassword' , nouveaumotdepasse)
+                }
+
                 setidentifiantConnexion('');
                 setnouveaumotdepasseConnexion('');
                 // ici, passer à l'état connecté pour toute l'app
-                setserverResponseConnection(data.message);
-                setShewPromptConnexion(true)
+                
+                
                 setTimeout( ()=>{
                     navigate('/Profil')
                 } , 1000)
@@ -144,7 +162,7 @@ function Connection() {
 
     return (
       <>
-        <MenuBar connected={false}></MenuBar>
+        <MenuBar ></MenuBar>
         <div className='Menu_droite_connexion'>
 
             <div className='Fond_container'>
