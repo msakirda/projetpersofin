@@ -1,4 +1,7 @@
+// Import des composants et modules nécessaires depuis react-router-dom
 import {createBrowserRouter, RouterProvider } from 'react-router-dom';
+
+// Import des composants de chaque page
 import Home from './Home';
 import Nouveau_projet from './Nouveau_projet';
 import About from './About';
@@ -8,48 +11,49 @@ import Profil from "./Profil"
 import Sharing from './Sharing';
 
 
-
+// Création d'une instance de BrowserRouter avec les différentes routes
 const router = createBrowserRouter([
   
   {
-    path: "/",
+    path: "/", // route pour la page d'accueil
     element: <Home />,
   },
 
   {
-    path: "/Nouveau_projet",
+    path: "/Nouveau_projet", // route pour la page Nouveau_projet
     element: <Nouveau_projet />,
   },
   {
-    path: "/About",
+    path: "/About", // route pour la page About
     element:<About />
   },
   {
-    path: "/Contact",
+    path: "/Contact", // route pour la page Contact
     element:<Contact />
   },
   {
-    path: "/Connexion",
+    path: "/Connexion", // route pour la page Connexion
     element:<Connexion />
   },
   {
-    path: "/Profil",
+    path: "/Profil", // route pour la page Profil
     element:<Profil />
   },
   {
-    path: "/Sharing",
+    path: "/Sharing", // route pour la page sharing
     element:<Sharing />
   }
-  
-  
-  
-
 
 ]);
+
+
+// Définition du composant principal App qui utilise le RouterProvider avec le router créé
+
 function App() {
   return (
     <RouterProvider router={router} />
   );
 }
 
+// Export du composant App comme composant principal de l'application
 export default App;
