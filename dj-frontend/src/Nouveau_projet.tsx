@@ -12,7 +12,7 @@ interface NouveauProjetProps {
   connected: boolean;
 }
 
-function Nouveau_projet({ connected }: NouveauProjetProps) {
+function Nouveau_projet() {
   const [middlePages, setMiddlePages] = useState<Page[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(0);
 
@@ -45,7 +45,7 @@ const addMiddlePage = () => {
 
   return (
     <>
-      <MenuBar connected={connected} />
+      <MenuBar  />
       <div className='right_part'>
             <button onClick={addMiddlePage}>Ajouter une page</button>
             <button onClick={removeLastPage}>Supprimer la dernière page</button>

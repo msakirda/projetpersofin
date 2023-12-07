@@ -37,10 +37,10 @@ const Contact = () => {
       <MenuBar ></MenuBar>
       <div className='right_menu'>
         <div className='allContactForm'>
-          <h1>Contactez-nous</h1>
+          <h1>Contact-us</h1>
           <form onSubmit={handleSubmit} className='formPart'>
             <div className='username_part'>
-              <label htmlFor="userName">Nom d'utilisateur:</label>
+              <label htmlFor="userName">Username:</label>
               <br />
               <input
                 type="text"
@@ -62,8 +62,8 @@ const Contact = () => {
                 required
               />
             </div>
-            <div>
-              <button type="submit">Envoyer</button>
+            <div className="bouton_envoyer">
+              <button  type="submit">Envoyer</button>
             </div>
           </form>
         </div>

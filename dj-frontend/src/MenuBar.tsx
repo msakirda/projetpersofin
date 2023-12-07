@@ -1,10 +1,9 @@
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import React, { useCallback, useState, useEffect } from "react";
 import './App.css'
 import './MenuBar.css';
-const bcrypt = require('bcrypt');
-import jwt from 'jsonwebtoken';
-import * as jsrsasign from 'jsrsasign';
+import crypto from 'crypto-js';  // Use crypto-js for client-side hashing
+
 
 
 
@@ -18,43 +17,37 @@ function MenuBar() {
     passwordHash: string;
     // Autres champs du token
   }
-  
+
+  const navigate = useNavigate();
+
   
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
-      try {
-        const decodedToken = jwt.decode(token) as TokenPayload;
-  
-        // Assurez-vous d'avoir les informations actuelles de l'utilisateur (nom d'utilisateur et mot de passe)
-        const userCurrentUsername = localStorage.getItem('userConnectedUsername')!;
-        const userCurrentPassword = localStorage.getItem('userConnectedPassword')!;
-  
-        const storedHash = decodedToken.passwordHash;
-  
-        const passwordIsValid = bcrypt.compareSync(userCurrentPassword, storedHash);
-  
-        if (passwordIsValid && userCurrentUsername === decodedToken.username) {
-          setUserConnected(userCurrentUsername);
-        } else {
-          handleLogOut();
-        }
-      } catch (error) {
-        console.error('Error comparing passwords:', error);
+      // Assume the token contains user information or is a hash of user data
+      const userTokenData = JSON.parse(token);
+
+      // Assurez-vous d'avoir les informations actuelles de l'utilisateur (nom d'utilisateur et mot de passe)
+      const userCurrentUsername = localStorage.getItem('userConnectedUsername')!;
+      const userCurrentPassword = localStorage.getItem('userConnectedPassword')!;
+
+      // Example: Hash the password and compare it with the stored hash in the token
+      const storedHash = userTokenData.passwordHash;
+      const passwordIsValid = crypto.SHA256(userCurrentPassword).toString() === storedHash;
+
+      console.log(userCurrentUsername , userCurrentPassword);
+
+      if (passwordIsValid && userCurrentUsername === userTokenData.username) {
+        setUserConnected(userCurrentUsername);
+        
+        
+        navigate("/Profil")
+      } else {
         handleLogOut();
       }
     }
   }, []);
   
-  function extractHashFromToken(token: string): string | null {
-    const decodedToken = jwt.decode(token) as TokenPayload | null;
-    return decodedToken ? decodedToken.passwordHash : null;
-  }
-  
-  function extractUsernameFromToken(token: string): string | null {
-    const decodedToken = jwt.decode(token) as TokenPayload | null;
-    return decodedToken ? decodedToken.username : null;
-  }
 
   
   

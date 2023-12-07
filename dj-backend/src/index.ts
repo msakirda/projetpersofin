@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express';
 import { Sequelize } from 'sequelize';
 const cors = require('cors');
+const crypto = require('crypto'); // Import the 'crypto' module
 
 // Création de l'application Express
 const app = express();
@@ -14,7 +15,6 @@ export const sequelize = new Sequelize({
 });
 
 import User from './models/user.model';
-import { log } from 'console';
 
 sequelize.sync()
   .then(() => {
@@ -44,8 +44,27 @@ app.use((req, res, next) => {
   next();
 });
 
+// Replace jwt with crypto for token creation and verification
+const authenticateToken = (req: { header: (arg0: string) => any; user: any; }, res: { status: (arg0: number) => { (): any; new(): any; json: { (arg0: { error: string; }): any; new(): any; }; }; }, next: () => void) => {
+  const token = req.header('Authorization');
+  if (!token) return res.status(401).json({ error: 'Unauthorized' });
+
+  // Replace jwt.verify with crypto for token verification
+  const secretKey = 'votre_clé_secrète';
+  const [header, payload, signature] = token.split('.');
+  const cryptoSignature = crypto.createHmac('sha256', secretKey).update(header + '.' + payload).digest('base64');
+
+  if (signature !== cryptoSignature) {
+    return res.status(403).json({ error: 'Forbidden' });
+  }
+
+  const user = JSON.parse(Buffer.from(payload, 'base64').toString('utf-8'));
+  req.user = user;
+  next();
+};
+
 // Change the route method to 'post'
-app.post('/users/connect', async (req: Request, res: Response) => {
+app.post('/users/connect', async (req, res) => {
   const { username, password } = req.body;
 
   const user = await User.findByPk(username) as User | null;
@@ -54,7 +73,13 @@ app.post('/users/connect', async (req: Request, res: Response) => {
     if (user.password !== password) {
       res.json({ signedUp: false, message: "Mauvais combo username / password." });
     } else {
-      res.json({ signedUp: true, message: "Connection réussie." });
+      // Replace jwt.sign with crypto for token creation
+      const secretKey = 'mubla_deeps';
+      const token = Buffer.from(JSON.stringify({ username: user.username })).toString('base64');
+      const signature = crypto.createHmac('sha256', secretKey).update(token).digest('base64');
+      const jwtToken = `${token}.${signature}`;
+
+      res.json({ signedUp: true, message: "Connection réussie.", token: jwtToken });
     }
   } else {
     res.json({ signedUp: false, message: "Cet utilisateur n'existe pas dans la BDD." });

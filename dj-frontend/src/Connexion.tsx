@@ -135,7 +135,7 @@ function Connection() {
                 setserverResponseCreation(data.response);
                 if(!localStorage.getItem('token'))
                 {
-                  localStorage.setItem('token', data.token);
+                  localStorage.setItem('token', data.token.toString());
                   localStorage.setItem('userConnectedUsername' , identifiant)
                   localStorage.setItem('userConnectedPassword' , nouveaumotdepasse)
                 }

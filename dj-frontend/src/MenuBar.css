@@ -9,7 +9,7 @@ a {
         background-color: #0063F8;
     }
     100%{
-        background-color: aquamarine;
+        background-color: rgb(0, 94, 182);
     }
 }
 .Titre_application{
@@ -21,9 +21,9 @@ a {
     align-items: center;
     display: flex;
     border-bottom: 1px solid blue;
-    border-top: 1px solid blue;
+    border-top: 1px solid rgb(122, 122, 255);
     font-family: American Typewriter, serif;
-    animation: bannerColorAnim 3s 0s infinite alternate;
+    animation: bannerColorAnim 1.5s 0s infinite alternate;
 }
 .Titre_application:hover{
     color: white;

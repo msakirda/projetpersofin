@@ -16,6 +16,7 @@ exports.sequelize = void 0;
 const express_1 = __importDefault(require("express"));
 const sequelize_1 = require("sequelize");
 const cors = require('cors');
+const crypto = require('crypto'); // Import the 'crypto' module
 // Création de l'application Express
 const app = (0, express_1.default)();
 const port = 3000;
@@ -50,6 +51,22 @@ app.use((req, res, next) => {
     }
     next();
 });
+// Replace jwt with crypto for token creation and verification
+const authenticateToken = (req, res, next) => {
+    const token = req.header('Authorization');
+    if (!token)
+        return res.status(401).json({ error: 'Unauthorized' });
+    // Replace jwt.verify with crypto for token verification
+    const secretKey = 'votre_clé_secrète';
+    const [header, payload, signature] = token.split('.');
+    const cryptoSignature = crypto.createHmac('sha256', secretKey).update(header + '.' + payload).digest('base64');
+    if (signature !== cryptoSignature) {
+        return res.status(403).json({ error: 'Forbidden' });
+    }
+    const user = JSON.parse(Buffer.from(payload, 'base64').toString('utf-8'));
+    req.user = user;
+    next();
+};
 // Change the route method to 'post'
 app.post('/users/connect', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { username, password } = req.body;
@@ -59,7 +76,12 @@ app.post('/users/connect', (req, res) => __awaiter(void 0, void 0, void 0, funct
             res.json({ signedUp: false, message: "Mauvais combo username / password." });
         }
         else {
-            res.json({ signedUp: true, message: "Connection réussie." });
+            // Replace jwt.sign with crypto for token creation
+            const secretKey = 'mubla_deeps';
+            const token = Buffer.from(JSON.stringify({ username: user.username })).toString('base64');
+            const signature = crypto.createHmac('sha256', secretKey).update(token).digest('base64');
+            const jwtToken = `${token}.${signature}`;
+            res.json({ signedUp: true, message: "Connection réussie.", token: jwtToken });
         }
     }
     else {

@@ -48,7 +48,7 @@
     .Fond_container {
         background-color: #5D96EB;
         width: 400px;
-        height: 600px;
+        height: 700px;
         text-align: center;
         padding: 3%;
     }
@@ -85,15 +85,25 @@
         background-color: white;
         /* padding: 5%; */
         width: 100%;
+        text-align: center;
     }
 
 
 
-    .Information_de_connexion , .Information_de_connexion_connexion{
+    .Information_de_connexion {
         display: flex;
         flex-direction: column;
         justify-content: space-between;
         align-items: flex-start;
+        height: 65%;
+
+    }
+    .Information_de_connexion_connexion{
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: flex-start;
+        height: auto;
     }
     
     .Information_de_connexion label {
