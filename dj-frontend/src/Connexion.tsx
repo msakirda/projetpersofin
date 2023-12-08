@@ -7,7 +7,9 @@ import MenuBar from './MenuBar';
 
 function Connection() {
     
-    const navigate = useNavigate();
+    const navigate = useNavigate(); // Utilisation du hook useNavigate pour la navigation
+
+    // Utilisation de useState pour gérer l'état des champs du formulaire
     const [identifiant, setIdentifiant] = useState('');
     const [nouveaumotdepasse, setNouveaumotdepasse] = useState('')
     const [resaisirmotdepasse,setResaisirmotdepasse] = useState('')
@@ -21,16 +23,18 @@ function Connection() {
     const [showPromptConnexion , setShewPromptConnexion] = useState(false);
     const [showPromptCreation , setShewPromptCreation] = useState(false);
   
-
+    // Fonction de gestion de la création de compte
     const handleCreationCompte = useCallback(
         async()=>{
+            // Construction de l'objet userData avec les données du formulaire
             const userData = {
                 username: identifiant,
                 email: email,
                 password: nouveaumotdepasse,
               };
-
+              // Réinitialisation du tableau de réponses du serveur
               setserverResponseCreation([]);
+              // Vérification des champs
               if(!identifiant || !nouveaumotdepasse || !resaisirmotdepasse || !email)
               {
                 setserverResponseCreation([..."Certains champs ne sont pas remplis."]);
@@ -50,7 +54,7 @@ function Connection() {
                 return;
               }
               
-
+              // Requête fetch pour créer un utilisateur
               fetch(`http://localhost:3000/users/create/${identifiant}`, {
                 method: 'POST',
                 headers: {
@@ -70,6 +74,7 @@ function Connection() {
                 console.log(data);
                 if(!data.exists)
                 {
+                    // Mise à jour de l'état et stockage local du token
                     setserverResponseCreation(data.response);
                     if(!localStorage.getItem('token'))
                     {
@@ -77,15 +82,14 @@ function Connection() {
                       localStorage.setItem('userConnectedUsername' , identifiant)
                       localStorage.setItem('userConnectedPassword' , nouveaumotdepasse)
                     }
-
+                    // Réinitialisation des champs du formulaire
                     setIdentifiant('');
                     setNouveaumotdepasse('');
                     setResaisirmotdepasse('');
                     setEmail('');
-                    //ici , passer a letat connecté pour toute l app
                     console.log(data.response);
                     
-                    
+                    // Redirection vers le profil après une courte attente
                     setShewPromptCreation(true)
                     setTimeout( ()=>{
                         navigate('/Profil')
@@ -99,10 +103,11 @@ function Connection() {
 
         }, [identifiant,nouveaumotdepasse, navigate, email]
     )
-
+    // Fonction de gestion de la connexion
     const handleClickConnection = useCallback(() => {
-
+        // Réinitialisation du tableau de réponses du serveur
         setserverResponseConnection([]);
+        // Vérification des champs
         if(!identifiantConnexion || !nouveaumotdepasseConnexion)
         {
             setserverResponseConnection([..."Certains champs ne sont pas remplis."]);
@@ -110,7 +115,7 @@ function Connection() {
             return;
         }
 
-
+        // Requête fetch pour la connexion de l'utilisateur
         fetch('http://localhost:3000/users/connect', {
           method: 'POST',
           headers: {
@@ -130,6 +135,7 @@ function Connection() {
           .then(data => {
             console.log(data);
             if (data.signedUp) {
+              // Mise à jour de l'état et stockage local du token
                 setserverResponseConnection(data.message);
                 setShewPromptConnexion(true)
                 setserverResponseCreation(data.response);
@@ -139,12 +145,10 @@ function Connection() {
                   localStorage.setItem('userConnectedUsername' , identifiant)
                   localStorage.setItem('userConnectedPassword' , nouveaumotdepasse)
                 }
-
+                // Réinitialisation des champs du formulaire
                 setidentifiantConnexion('');
                 setnouveaumotdepasseConnexion('');
-                // ici, passer à l'état connecté pour toute l'app
-                
-                
+                // Redirection vers le profil après une courte attente
                 setTimeout( ()=>{
                     navigate('/Profil')
                 } , 1000)
@@ -159,7 +163,7 @@ function Connection() {
           });
       }, [identifiantConnexion, nouveaumotdepasseConnexion, navigate]);
       
-
+    // Rendu du composant Connection
     return (
       <>
         <MenuBar ></MenuBar>
@@ -222,6 +226,6 @@ function Connection() {
       </>
     )
   }
-  
+  // Export du composant Connection
   export default Connection
   
