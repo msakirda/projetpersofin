@@ -38,10 +38,11 @@ a {
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: center;
+    justify-content: first baseline;
     min-height: 40px;
     padding-top: 3% ;
     padding-bottom: 3% ;
+    padding-left: 7%;
 }
 
 .menuSection img{
