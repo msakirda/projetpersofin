@@ -135,14 +135,16 @@ function Connection() {
                 setserverResponseCreation(data.response);
                 if(!localStorage.getItem('token'))
                 {
+                  console.log(data.token)
                   localStorage.setItem('token', data.token.toString());
                   localStorage.setItem('userConnectedUsername' , identifiant)
+                  console.log(identifiant);
+                  
                   localStorage.setItem('userConnectedPassword' , nouveaumotdepasse)
                 }
 
                 setidentifiantConnexion('');
                 setnouveaumotdepasseConnexion('');
-                // ici, passer à l'état connecté pour toute l'app
                 
                 
                 setTimeout( ()=>{

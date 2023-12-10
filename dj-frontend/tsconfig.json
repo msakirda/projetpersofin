@@ -6,8 +6,7 @@
     "target": "esnext",
     "module": "esnext",
     "moduleResolution": "node",
-
-
+    
     /* Bundler mode */
     "allowSyntheticDefaultImports": true,
     "allowImportingTsExtensions": true,
@@ -20,7 +19,10 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    
+    /* Additional Options */
+    "esModuleInterop": true
   },
   "include": ["src", "types.d.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]

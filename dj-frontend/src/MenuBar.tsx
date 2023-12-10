@@ -1,53 +1,70 @@
-import { Link, Navigate, useNavigate } from "react-router-dom";
-import React, { useCallback, useState, useEffect } from "react";
+import React, { useState, useEffect , useCallback } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { isExpired, decodeToken } from "react-jwt";
 import './App.css'
 import './MenuBar.css';
-import crypto from 'crypto-js';  // Use crypto-js for client-side hashing
-
-
-
-
 
 function MenuBar() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [userConnected, setUserConnected] = useState("#UserIncognito");
+  const navigate = useNavigate();
+  const [isMenuOpen , setIsMenuOpen] = useState(false);
 
   interface TokenPayload {
     username: string;
-    passwordHash: string;
-    // Autres champs du token
+    email: string;
+    userId: number;
+    // Add other properties based on your token structure
+    // For example, you might have roles, permissions, expiration date, etc.
+    roles: string[];
+    permissions: string[];
+    exp: number; // Expiration time (UNIX timestamp)
   }
 
-  const navigate = useNavigate();
+  const handleLogout = () => {
+    setUserConnected('#UserIncognito');
+    localStorage.removeItem('token')
+    localStorage.setItem('userConnectedUsername' , '#UserIncognito');
+    localStorage.removeItem('userConnectedPassword');
+    console.log("deconnexion.");
+  };
 
-  
   useEffect(() => {
     const token = localStorage.getItem('token');
-    if (token) {
-      // Assume the token contains user information or is a hash of user data
-      const userTokenData = JSON.parse(token);
+  
+    
+  
+    if (token && localStorage.getItem('userConnectedUsername') !== '#UserIncognito') {
+      try {
+        // Decode the token to get user information
+        const decodedToken = decodeToken(token) as TokenPayload;
+  
 
-      // Assurez-vous d'avoir les informations actuelles de l'utilisateur (nom d'utilisateur et mot de passe)
-      const userCurrentUsername = localStorage.getItem('userConnectedUsername')!;
-      const userCurrentPassword = localStorage.getItem('userConnectedPassword')!;
-
-      // Example: Hash the password and compare it with the stored hash in the token
-      const storedHash = userTokenData.passwordHash;
-      const passwordIsValid = crypto.SHA256(userCurrentPassword).toString() === storedHash;
-
-      console.log(userCurrentUsername , userCurrentPassword);
-
-      if (passwordIsValid && userCurrentUsername === userTokenData.username) {
-        setUserConnected(userCurrentUsername);
+        console.log(localStorage.getItem('userConnectedUsername'));
         
-        
-        navigate("/Profil")
-      } else {
-        handleLogOut();
+        // No need to check for current user information as React-JWT handles this internally
+        if (decodedToken && !isExpired(token) 
+        ) {
+          // Successful login, update state or perform other necessary actions
+          if(userConnected === "#UserIncognito")
+          {
+            console.log(`User connected: ${decodedToken.username}`);
+            setUserConnected(decodedToken.username);
+          }
+        } else {
+          // Logout if the decoded token is null or undefined
+          handleLogout();
+        }
+      } catch (error) {
+        // Handle token decoding errors
+        console.error('Error decoding token:', error);
+        handleLogout();
       }
     }
+    else{
+      handleLogout();
+    }
   }, []);
-  
+
 
   
   
@@ -61,13 +78,6 @@ function MenuBar() {
     }
   }, [isMenuOpen]);
 
-  const handleLogOut = () => {
-    // Supprimer le token du stockage local
-    localStorage.removeItem('token');
-    // Mettre à jour l'état de l'utilisateur connecté
-    setUserConnected("#UserIncognito");
-  };
-
   return (
     <div className="Menu_gauche">
       <div id="boutonSandwich" onClick={handleClickSandwich}></div>
@@ -77,21 +87,23 @@ function MenuBar() {
         </div>
       </Link>
       <div className='Menu_gauche_milieu'>
-        {userConnected !== "#UserIncognito" ? (
-          <Link className="menuOption" to="/Profil">
-            <div className="menuSection">
-              {/* Composant de profil (image, etc.) */}
-              <img id="image_profile" src="prof.png" alt="Profil" />
-              {userConnected}
-            </div>
-          </Link>
-        ) : (
-          <Link className="menuOption" to="/Connexion">
-            <div className="menuSection">
-              Connexion
-            </div>
-          </Link>
-        )}
+        {/*  */}
+                {userConnected !== "#UserIncognito" ? (
+                  <Link className="menuOption" to="/Profil">
+                    <div className="menuSection">
+                      {/* Composant de profil (image, etc.) */}
+                      <img id="image_profile" src="prof.png" alt="Profil" />
+                      {userConnected}
+                    </div>
+                  </Link>
+                ) : (
+                  <Link className="menuOption" to="/Connexion">
+                    <div className="menuSection">
+                      Connexion
+                    </div>
+                  </Link>
+                )}
+        {/*  */}
         <Link className="menuOption" to="/Nouveau_projet">
           <div className="Titre_Nouveau_projet menuSection">
             New Project
@@ -105,6 +117,13 @@ function MenuBar() {
       </div>
 
       <div className='Menu_gauche_bas'>
+        {userConnected === "#UserIncognito"  ? <></> : 
+          <Link className="menuOption" to="/About" onClick={handleLogout}>
+          <div className="deconnexionLink menuSection" >
+            Deconnexion
+          </div>
+        </Link>
+        }
         <Link className="menuOption" to="/About">
           <div className="Titre_About menuSection">
             About

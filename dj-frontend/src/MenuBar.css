@@ -54,6 +54,7 @@ a {
     height: 100%;
     background: linear-gradient(#0063F8,white);
     
+    
 }
 
 @media screen and (min-width: 550px){
@@ -64,7 +65,7 @@ a {
 
     .Menu_gauche_milieu {
         width: 100%; /* Prend toute la largeur de Menu_gauche */
-        height: 70%; /* Ajustez la hauteur selon vos besoins */
+        height: auto; /* Ajustez la hauteur selon vos besoins */
         display: flex;
         flex-direction: column;
         border-bottom: 1px solid blue;
@@ -80,7 +81,7 @@ a {
     
     .Menu_gauche_bas {
         width: 100%;
-        
+
         
     }
 
