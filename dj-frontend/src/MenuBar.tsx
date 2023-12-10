@@ -1,14 +1,21 @@
-import React, { useState, useEffect , useCallback } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { isExpired, decodeToken } from "react-jwt";
+// Import des composants nécessaires depuis les bibliothèques React et React Router DOM
+import { Link, Navigate, useNavigate } from "react-router-dom";
+import React, { useCallback, useState, useEffect } from "react";
+
+// Import des styles CSS 
 import './App.css'
 import './MenuBar.css';
 
+// Import de la bibliothèque crypto-js pour les opérations de hachage
+import { isExpired, decodeToken } from "react-jwt";
+
+// Définition du composant fonctionnel MenuBar
 function MenuBar() {
   const [userConnected, setUserConnected] = useState("#UserIncognito");
   const navigate = useNavigate();
   const [isMenuOpen , setIsMenuOpen] = useState(false);
 
+  // Interface pour représenter la structure du payload du token
   interface TokenPayload {
     username: string;
     email: string;
@@ -29,6 +36,7 @@ function MenuBar() {
   };
 
   useEffect(() => {
+    // Récupération du token depuis le stockage local
     const token = localStorage.getItem('token');
   
     
@@ -69,10 +77,13 @@ function MenuBar() {
   
   
 
+  // Gestionnaire de clic pour le bouton du menu hamburger
   const handleClickSandwich = useCallback(() => {
     const menuGauche = document.querySelector('.Menu_gauche');
 
+    // Vérification de l'existence de l'élément du menu gauche
     if (menuGauche) {
+      // Ajout ou suppression de la classe "bouger" pour ouvrir ou fermer le menu
       menuGauche.classList.toggle("bouger", !isMenuOpen);
       setIsMenuOpen(prevState => !prevState);
     }
@@ -80,12 +91,15 @@ function MenuBar() {
 
   return (
     <div className="Menu_gauche">
+      {/* Bouton du menu hamburger */}
       <div id="boutonSandwich" onClick={handleClickSandwich}></div>
-      <Link to={"/"}>
-        <div className="Titre_application">
+
+      {/* Titre de l'application avec lien vers la page d'accueil */}
+      <Link to={"/"} className="Titre_application">
           <h1>SPEEDALBUM</h1>
-        </div>
       </Link>
+
+      {/* Section du menu gauche (milieu) */}
       <div className='Menu_gauche_milieu'>
         {/*  */}
                 {userConnected !== "#UserIncognito" ? (
@@ -116,6 +130,7 @@ function MenuBar() {
         </Link>
       </div>
 
+      {/* Section du menu gauche (bas) */}
       <div className='Menu_gauche_bas'>
         {userConnected === "#UserIncognito"  ? <></> : 
           <Link className="menuOption" to="/About" onClick={handleLogout}>
@@ -139,4 +154,5 @@ function MenuBar() {
   );
 }
 
+// Export du composant MenuBar
 export default MenuBar;

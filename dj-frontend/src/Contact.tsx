@@ -1,16 +1,20 @@
+// Import des fichiers CSS et du module React et useState depuis React
 import './App.css'
 import './Contact.css'
 import React, { useState } from 'react';
+
+// Import du composant MenuBar
 import MenuBar from './MenuBar';
 
 
-
+// Définition du composant fonctionnel Contact
 const Contact = () => {
+  // Utilisation de useState pour gérer l'état du formulaire
   const [formData, setFormData] = useState({
     userName: '',
     message: '',
   });
-
+  // Fonction handleChange pour mettre à jour l'état lorsqu'un champ du formulaire change
   const handleChange = (e: { target: { name: any; value: any; }; }) => {
     const { name, value } = e.target;
     setFormData({
@@ -18,20 +22,20 @@ const Contact = () => {
       [name]: value,
     });
   };
-
+  // Fonction handleSubmit pour gérer la soumission du formulaire
   const handleSubmit = (e: { preventDefault: () => void; }) => {
-    e.preventDefault();
-    // Ici, vous pouvez ajouter le code pour envoyer les données du formulaire (formData) à votre backend
-    // ou effectuer toute autre action souhaitée (par exemple, envoyer un e-mail).
+    e.preventDefault();     // Empêche le comportement par défaut du formulaire (rechargement de la page)
+
+    // Affiche les données dans la console (simule l'envoi à un serveur)
     console.log('Nom d\'utilisateur:', formData.userName);
     console.log('Message:', formData.message);
-    // Réinitialiser le formulaire après la soumission si nécessaire
+    // Réinitialise les champs du formulaire après la soumission
     setFormData({
       userName: '',
       message: '',
     });
   };
-
+  // Rendu du composant Contact
   return (
     <>
       <MenuBar ></MenuBar>
@@ -71,7 +75,7 @@ const Contact = () => {
     </>
   );
 };
-
+// Export du composant Contact
 export default Contact;
 
   
