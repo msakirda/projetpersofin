@@ -3,6 +3,7 @@ import './App.css'
 import './Connexion.css'
 import React, { useCallback, useState } from 'react';
 import MenuBar from './MenuBar';
+import SectionTitle from './SectionTitle';
 
 
 function Connection() {
@@ -138,7 +139,6 @@ function Connection() {
               // Mise à jour de l'état et stockage local du token
                 setserverResponseConnection(data.message);
                 setShewPromptConnexion(true)
-                setserverResponseCreation(data.response);
                 if(!localStorage.getItem('token'))
                 {
                   console.log(data.token)
@@ -171,7 +171,7 @@ function Connection() {
       <>
         <MenuBar ></MenuBar>
         <div className='Menu_droite_connexion'>
-
+            <SectionTitle  contenu='Connexion' ></SectionTitle>
             <div className='Fond_container'>
 
                 <div className='Information_de_connexion'>

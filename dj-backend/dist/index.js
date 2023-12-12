@@ -27,6 +27,7 @@ exports.sequelize = new sequelize_1.Sequelize({
     logging: console.log, // Active les logs Sequelize
 });
 const user_model_1 = __importDefault(require("./models/user.model"));
+const profile_model_1 = __importDefault(require("./models/profile.model"));
 exports.sequelize.sync()
     .then(() => {
     // Démarrage du serveur Express après la synchronisation
@@ -51,6 +52,9 @@ app.use((req, res, next) => {
     }
     next();
 });
+const authenticateToken = () => {
+    return true;
+};
 const secretKey = 'mubla_deeps';
 app.post('/users/connect', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { username, password } = req.body;
@@ -85,7 +89,16 @@ app.post('/users/create/:username', (req, res) => __awaiter(void 0, void 0, void
                 email: req.body.email, // Assuming 'email' is a required field
                 password: req.body.password, // Assuming 'password' is a required field
             });
-            return res.json({ exists: false, response: `Compte Utilisateur [${req.params.username}] créé avec succès.` });
+            const newUserProfile = yield profile_model_1.default.create({
+                username: req.params.username, // Assuming 'username' is a required field
+                firstname: "", // Assuming 'email' is a required field
+                lastname: "", // Assuming 'password' is a required field
+                email: req.body.email, // Assuming 'password' is a required field
+                avatar: "", // Assuming 'password' is a required field
+            });
+            // Create a token JWT
+            const token = jwt.sign({ username: req.params.username }, secretKey, { expiresIn: '1h' });
+            res.json({ signedUp: true, message: 'Compte Utilisateur [${req.params.username}] créé avec succès.', token });
         }
         else {
             res.json({ exists: true, response: "Cet Utilisateur existe déjà, création de compte impossible." });
@@ -94,5 +107,18 @@ app.post('/users/create/:username', (req, res) => __awaiter(void 0, void 0, void
     catch (error) {
         console.error('Error creating or checking user:', error);
         res.status(500).json({ error: 'Internal Server Error' });
+    }
+}));
+// Route pour mettre à jour le profil
+app.put('/api/profile', authenticateToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { username, firstName, lastName, email, avatar } = req.body;
+        // Assurez-vous que le type de userId correspond au type attendu dans votre modèle
+        const updatedProfile = yield profile_model_1.default.update({ username, firstName, lastName, email, avatar }, { where: { username: req.params.username } });
+        res.json(updatedProfile);
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Erreur lors de la mise à jour du profil' });
     }
 }));

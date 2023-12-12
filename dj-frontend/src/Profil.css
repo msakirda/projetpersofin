@@ -1,0 +1,17 @@
+.profile_panel_container{
+    width: 75%;
+    height: auto;
+    background-color: aliceblue;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    overflow-y: auto;
+}
+
+.profile_panel_inside{
+    width: 50%;
+    height: 90%;
+    padding: 3%;
+}
+

@@ -1,0 +1,10 @@
+.sectionTitleContainer h1{
+    text-align: center;
+    position: fixed;
+    top: 0;
+    right: 0;
+    padding: 3%;
+    border: 1px black solid;
+    margin: 0;
+    background-color: aqua;
+}

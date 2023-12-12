@@ -95,19 +95,20 @@ function MenuBar() {
       <div id="boutonSandwich" onClick={handleClickSandwich}></div>
 
       {/* Titre de l'application avec lien vers la page d'accueil */}
-      <Link to={"/"} className="Titre_application">
-          <h1>SPEEDALBUM</h1>
-      </Link>
-
-      {/* Section du menu gauche (milieu) */}
       <div className='Menu_gauche_milieu'>
+        <Link to={"/"} className="Titre_application">
+            <h1>SPEEDALBUM</h1>
+        </Link>
+
+        {/* Section du menu gauche (milieu) */}
+      
         {/*  */}
                 {userConnected !== "#UserIncognito" ? (
                   <Link className="menuOption" to="/Profil">
                     <div className="menuSection">
                       {/* Composant de profil (image, etc.) */}
                       <img id="image_profile" src="prof.png" alt="Profil" />
-                      {userConnected}
+                      {userConnected} (Profile)
                     </div>
                   </Link>
                 ) : (
