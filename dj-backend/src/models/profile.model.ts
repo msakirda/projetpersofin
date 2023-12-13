@@ -16,11 +16,11 @@ Profile.init(
     },
     firstname: {
       type: DataTypes.STRING,
-      allowNull: true,
+      allowNull: false,
     },
     lastname: {
       type: DataTypes.STRING,
-      allowNull: true,
+      allowNull: false,
     },
     email: {
         type: DataTypes.STRING,
@@ -28,7 +28,7 @@ Profile.init(
       },
     avatar: {
         type: DataTypes.STRING,
-        allowNull: true,
+        allowNull: false,
     },
   },
   {

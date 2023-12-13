@@ -40,97 +40,93 @@ function Profil() {
     }
   };
 
-  const handleSubmit = (e: { preventDefault: () => void; }) => {
-    e.preventDefault();
-    // Ajoutez ici la logique pour envoyer les données du formulaire au serveur
-    console.log('Formulaire soumis avec les données:', formData);
-
-    // Requête fetch pour la modification du profil de l'utilisateur
-    fetch('http://localhost:3000/api/profile', {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        token : localStorage.getItem('token'),
-        username: localStorage.getItem('userConnectedUsername'), 
-        firstname: formData.firstName,
-        lastname: formData.lastName,
-        email : formData.email,
-        avatar: formData.avatar 
-      }),
-    })
-    .then(response => {
+  const handleSubmit = async () => {
+    console.log("données envoyées par le fetch updateProfile , sans compter username et token: " , formData);
+  
+    try {
+      const storageUsername = localStorage.getItem('userConnectedUsername');
+      const storageToken = localStorage.getItem('token');
+      // Requête fetch pour la modification du profil de l'utilisateur
+      const response = await fetch('http://localhost:3000/api/updateProfile', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          token: storageToken,
+          username: storageUsername,
+          firstname: formData.firstName,
+          lastname: formData.lastName,
+          email: formData.email,
+        }),
+      });
+  
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-      return response.json();
-    })
-    .then(data => {
-      console.log(data);
-      if (data.signedUp) {
-        
-      }
-      
-    })
-    .catch(error => {
+  
+      const responseData = await response.json();
+      console.log(responseData.message);
+      // Handle the successful response here, if needed
+  
+    } catch (error) {
       console.error('Error connecting user:', error);
-    }), [] 
+      // Handle the error here, if needed
+    }
   };
+  
 
-    return (
-      <>
-        <MenuBar ></MenuBar>
-        <div className='profile_panel_container'>
-          <SectionTitle contenu='Profile'></SectionTitle>
-          
-          <div className='profile_panel_inside'>
-          <form onSubmit={handleSubmit}>
-            <label>
-              Username:
-              <input type="text" name="userName" value={localStorage.getItem("userConnectedUsername")!}  />
-            </label>
-            <br />
-            <label>
-              Prénom:
-              <input type="text" name="firstName" value={formData.firstName} onChange={handleChange} />
-            </label>
-            <br />
-
-            <label>
-              Nom:
-              <input type="text" name="lastName" value={formData.lastName} onChange={handleChange} />
-            </label>
-            <br />
-
-            <label>
-              Email:
-              <input type="email" name="email" value={formData.email} onChange={handleChange} />
-            </label>
-            <br />
-
-            <label>
-              Avatar:
-              <input type="file" accept="image/*" onChange={handleAvatarChange} />
-            </label>
-            <br />
-
-            {formData.avatar && (
-              <div>
-                <p>Aperçu de l'avatar:</p>
-                <img src={URL.createObjectURL(formData.avatar)} alt="Avatar Preview" style={{ width: '100px', height: '100px' }} />
-              </div>
-            )}
-
-            <br />
-
-            <button type="submit">Valider les modifications</button>
-          </form>
-          </div>
+  return (
+    <>
+      <MenuBar ></MenuBar>
+      <div className='profile_panel_container'>
+        <SectionTitle contenu='Profile'></SectionTitle>
         
+        <div className='profile_panel_inside'>
+          <label className='labelProfile'>
+            Username:
+            <input type="text" name="userName"  defaultValue={localStorage.getItem("userConnectedUsername")! }/>
+          </label>
+          <br />
+          <label className='labelProfile'>
+            Prénom:
+            <input type="text" name="firstName" value={formData.firstName} onChange={handleChange} />
+          </label>
+          <br />
+
+          <label className='labelProfile'>
+            Nom:
+            <input type="text" name="lastName" value={formData.lastName} onChange={handleChange} />
+          </label>
+          <br />
+
+          <label className='labelProfile'>
+            Email:
+            <input type="email" name="email" value={formData.email} onChange={handleChange} />
+          </label>
+          <br />
+
+          {/* <label>
+            Avatar:
+            <input type="file" accept="image/*" onChange={handleAvatarChange} />
+          </label>
+          <br />
+
+          {formData.avatar && (
+            <div>
+              <p>Aperçu de l'avatar:</p>
+              <img src={URL.createObjectURL(formData.avatar)} alt="Avatar Preview" style={{ width: '100px', height: '100px' }} />
+            </div>
+          )} */}
+
+          <br />
+
+          <button onClick={handleSubmit} >Valider les modifications</button>
         </div>
-      </>
-    )
-  }
+      
+      </div>
+    </>
+  )
+}
   
   export default Profil

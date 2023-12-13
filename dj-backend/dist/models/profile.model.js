@@ -12,11 +12,11 @@ Profile.init({
     },
     firstname: {
         type: sequelize_1.DataTypes.STRING,
-        allowNull: true,
+        allowNull: false,
     },
     lastname: {
         type: sequelize_1.DataTypes.STRING,
-        allowNull: true,
+        allowNull: false,
     },
     email: {
         type: sequelize_1.DataTypes.STRING,
@@ -24,7 +24,7 @@ Profile.init({
     },
     avatar: {
         type: sequelize_1.DataTypes.STRING,
-        allowNull: true,
+        allowNull: false,
     },
 }, {
     sequelize: index_1.sequelize,

@@ -4,9 +4,21 @@ import './Connexion.css'
 import React, { useCallback, useState } from 'react';
 import MenuBar from './MenuBar';
 import SectionTitle from './SectionTitle';
+import { decodeToken } from 'react-jwt';
 
 
 function Connection() {
+
+  interface TokenPayload {
+    username: string;
+    email: string;
+    userId: number;
+    // Add other properties based on your token structure
+    // For example, you might have roles, permissions, expiration date, etc.
+    roles: string[];
+    permissions: string[];
+    exp: number; // Expiration time (UNIX timestamp)
+  }
     
     const navigate = useNavigate(); // Utilisation du hook useNavigate pour la navigation
 
@@ -73,29 +85,26 @@ function Connection() {
               })
               .then(data => {
                 console.log(data);
-                if(!data.exists)
-                {
-                    // Mise à jour de l'état et stockage local du token
-                    setserverResponseCreation(data.response);
-                    if(!localStorage.getItem('token'))
-                    {
-                      localStorage.setItem('token', data.token);
-                      localStorage.setItem('userConnectedUsername' , identifiant)
-                      localStorage.setItem('userConnectedPassword' , nouveaumotdepasse)
-                    }
-                    // Réinitialisation des champs du formulaire
-                    setIdentifiant('');
-                    setNouveaumotdepasse('');
-                    setResaisirmotdepasse('');
-                    setEmail('');
-                    console.log(data.response);
-                    
-                    // Redirection vers le profil après une courte attente
-                    setShewPromptCreation(true)
-                    setTimeout( ()=>{
-                        navigate('/Profil')
-                    } , 1000)
-                }
+                const decodedToken = decodeToken(data.token) as TokenPayload;
+                // Mise à jour de l'état et stockage local du token
+                setserverResponseCreation(data.response);
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('userConnectedUsername' , decodedToken.username)
+                console.log(localStorage.getItem("userConnectedUsername") );
+                
+                // Réinitialisation des champs du formulaire
+                setIdentifiant('');
+                setNouveaumotdepasse('');
+                setResaisirmotdepasse('');
+                setEmail('');
+                console.log(data.response);
+                
+                // Redirection vers le profil après une courte attente
+                setShewPromptCreation(true)
+                setTimeout( ()=>{
+                    navigate('/Profil')
+                } , 1000)
+                
               })
               .catch(error => {
                 console.error('Error creating user:', error);
@@ -127,43 +136,38 @@ function Connection() {
             password: nouveaumotdepasseConnexion,
           }),
         })
-          .then(response => {
-            if (!response.ok) {
-              throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-            return response.json();
-          })
-          .then(data => {
-            console.log(data);
-            if (data.signedUp) {
-              // Mise à jour de l'état et stockage local du token
-                setserverResponseConnection(data.message);
-                setShewPromptConnexion(true)
-                if(!localStorage.getItem('token'))
-                {
-                  console.log(data.token)
-                  localStorage.setItem('token', data.token.toString());
-                  localStorage.setItem('userConnectedUsername' , identifiant)
-                  console.log(identifiant);
-                  
-                  localStorage.setItem('userConnectedPassword' , nouveaumotdepasse)
-                }
-                // Réinitialisation des champs du formulaire
-                setidentifiantConnexion('');
-                setnouveaumotdepasseConnexion('');
-                // Redirection vers le profil après une courte attente
-                setTimeout( ()=>{
-                    navigate('/Profil')
-                } , 1000)
-            }
-            else{
-                setserverResponseConnection(data.message)
-                setShewPromptConnexion(true)
-            }
-          })
-          .catch(error => {
-            console.error('Error connecting user:', error);
-          });
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then(data => {
+          console.log(data);
+          if (data.signedUp) {
+            const decodedToken = decodeToken(data.token) as TokenPayload;
+            // Mise à jour de l'état et stockage local du token
+              setserverResponseConnection(data.message);
+              setShewPromptConnexion(true)
+              localStorage.setItem('token', data.token.toString());
+              localStorage.setItem('userConnectedUsername' , decodedToken.username)
+              console.log(localStorage.getItem("userConnectedUsername") );
+              // Réinitialisation des champs du formulaire
+              setidentifiantConnexion('');
+              setnouveaumotdepasseConnexion('');
+              // Redirection vers le profil après une courte attente
+              setTimeout( ()=>{
+                  navigate('/Profil')
+              } , 1000)
+          }
+          else{
+              setserverResponseConnection(data.message)
+              setShewPromptConnexion(true)
+          }
+        })
+        .catch(error => {
+          console.error('Error connecting user:', error);
+        });
       }, [identifiantConnexion, nouveaumotdepasseConnexion, navigate]);
       
     // Rendu du composant Connection

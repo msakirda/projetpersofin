@@ -6,3 +6,17 @@ Content-Type: application/json
   "password": "examplePassword",
   "email": "example@email.com"
 }
+
+###
+PUT http://localhost:3000/api/updateProfile
+Content-Type: application/json
+
+{
+  "token": "your_token_here",
+  "username": "darref",
+  "firstname": "Toto",
+  "lastname": "Doe",
+  "email": "john.doe@example.com",
+  "avatar": "test"
+}
+

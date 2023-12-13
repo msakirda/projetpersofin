@@ -4,6 +4,9 @@ import { Sequelize } from 'sequelize';
 const cors = require('cors');
 const jwt = require('jsonwebtoken'); // Importez jsonwebtoken
 
+import multer from 'multer'; 
+import path from 'path';
+
 // Création de l'application Express
 const app = express();
 const port = 3000;
@@ -17,6 +20,7 @@ export const sequelize = new Sequelize({
 
 import User from './models/user.model';
 import Profile from './models/profile.model';
+import { log } from 'console';
 
 sequelize.sync()
   .then(() => {
@@ -46,16 +50,25 @@ app.use((req, res, next) => {
   next();
 });
 
+const secretKey = 'mubla_deeps';
+  
 
-interface AuthenticatedRequest extends Request {
-  user: { userId: string  , token: string}; // Ajoutez les propriétés nécessaires ici
-}
+const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
+  const token = req.body.token;
 
-const authenticateToken= ()=>{
-  return true;
+  if (!token) {
+    return res.status(401).json({ message: 'Token missing' });
+  }
+
+  jwt.verify(token, secretKey, (err: any, user: any) => {
+    if (err) {
+      return res.status(403).json({ message: 'Invalid token' });
+    }
+
+    next();
+  });
 };
 
-const secretKey = 'mubla_deeps';
 
 app.post('/users/connect', async (req, res) => {
   const { username, password } = req.body;
@@ -71,7 +84,7 @@ app.post('/users/connect', async (req, res) => {
       const token = jwt.sign({ username }, secretKey, { expiresIn: '1h' });
 
       // Return the token to the client
-      res.json({ signedUp: true, message: 'Connection réussie.', token });
+      res.json({ signedUp: true, message: 'Connection réussie.', token  });
     } else {
       // User not found or password does not match
       res.json({ signedUp: false, message: 'Mauvais combo username / password.' });
@@ -116,24 +129,32 @@ app.post('/users/create/:username', async (req: Request, res: Response) => {
 });
 
 
-// Route pour mettre à jour le profil
-app.put('/api/profile', authenticateToken, async (req: Request, res: Response) => {
+app.put('/api/updateProfile', authenticateToken, async (req, res) => {
   try {
-    const {username, firstName, lastName, email, avatar } = req.body;
+    console.log(req.body);
+    
+    // Vous pouvez maintenant accéder aux détails du fichier dans req.file
 
-    // Assurez-vous que le type de userId correspond au type attendu dans votre modèle
-    const updatedProfile = await Profile.update(
-      {username, firstName, lastName, email, avatar },
-      { where: { username: req.params.username } }
+    const [updatedRowCount] = await Profile.update(
+      {
+        firstname: req.body.firstname,
+        lastname: req.body.lastname,
+        email: req.body.email,
+      },
+      { where: { username: req.body.username } }
     );
 
-    res.json(updatedProfile);
-    
+    if (updatedRowCount > 0) {
+      res.json({ message: 'Profil mis à jour avec succès' });
+    } else {
+      res.status(404).json({ message: 'Utilisateur non trouvé' });
+    }
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Erreur lors de la mise à jour du profil' });
   }
 });
+
 
 
 

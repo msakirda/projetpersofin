@@ -52,10 +52,19 @@ app.use((req, res, next) => {
     }
     next();
 });
-const authenticateToken = () => {
-    return true;
-};
 const secretKey = 'mubla_deeps';
+const authenticateToken = (req, res, next) => {
+    const token = req.body.token;
+    if (!token) {
+        return res.status(401).json({ message: 'Token missing' });
+    }
+    jwt.verify(token, secretKey, (err, user) => {
+        if (err) {
+            return res.status(403).json({ message: 'Invalid token' });
+        }
+        next();
+    });
+};
 app.post('/users/connect', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { username, password } = req.body;
     try {
@@ -109,13 +118,21 @@ app.post('/users/create/:username', (req, res) => __awaiter(void 0, void 0, void
         res.status(500).json({ error: 'Internal Server Error' });
     }
 }));
-// Route pour mettre à jour le profil
-app.put('/api/profile', authenticateToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.put('/api/updateProfile', authenticateToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { username, firstName, lastName, email, avatar } = req.body;
-        // Assurez-vous que le type de userId correspond au type attendu dans votre modèle
-        const updatedProfile = yield profile_model_1.default.update({ username, firstName, lastName, email, avatar }, { where: { username: req.params.username } });
-        res.json(updatedProfile);
+        console.log(req.body);
+        // Vous pouvez maintenant accéder aux détails du fichier dans req.file
+        const [updatedRowCount] = yield profile_model_1.default.update({
+            firstname: req.body.firstname,
+            lastname: req.body.lastname,
+            email: req.body.email,
+        }, { where: { username: req.body.username } });
+        if (updatedRowCount > 0) {
+            res.json({ message: 'Profil mis à jour avec succès' });
+        }
+        else {
+            res.status(404).json({ message: 'Utilisateur non trouvé' });
+        }
     }
     catch (error) {
         console.error(error);

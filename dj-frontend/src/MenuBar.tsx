@@ -31,7 +31,6 @@ function MenuBar() {
     setUserConnected('#UserIncognito');
     localStorage.removeItem('token')
     localStorage.setItem('userConnectedUsername' , '#UserIncognito');
-    localStorage.removeItem('userConnectedPassword');
     console.log("deconnexion.");
   };
 
@@ -55,7 +54,6 @@ function MenuBar() {
           // Successful login, update state or perform other necessary actions
           if(userConnected === "#UserIncognito")
           {
-            console.log(`User connected: ${decodedToken.username}`);
             setUserConnected(decodedToken.username);
           }
         } else {
