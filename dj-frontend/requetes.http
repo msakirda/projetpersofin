@@ -20,3 +20,6 @@ Content-Type: application/json
   "avatar": "test"
 }
 
+###
+GET http://localhost:3000/getProfile/testtoken/darref
+Content-Type: application/json

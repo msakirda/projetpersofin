@@ -22,9 +22,17 @@ Profile.init({
         type: sequelize_1.DataTypes.STRING,
         allowNull: false,
     },
-    avatar: {
+    phone: {
         type: sequelize_1.DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
+    },
+    address: {
+        type: sequelize_1.DataTypes.STRING,
+        allowNull: true,
+    },
+    country: {
+        type: sequelize_1.DataTypes.STRING,
+        allowNull: true,
     },
 }, {
     sequelize: index_1.sequelize,

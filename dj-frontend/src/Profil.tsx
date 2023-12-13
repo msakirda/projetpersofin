@@ -1,6 +1,6 @@
 import './App.css'
 import './Profil.css'
-import React, { ChangeEvent, ChangeEventHandler, useState } from 'react';
+import React, { ChangeEvent, ChangeEventHandler, useEffect, useState } from 'react';
 import MenuBar from './MenuBar';
 import SectionTitle from './SectionTitle';
 
@@ -8,7 +8,9 @@ interface FormData {
   firstName: string;
   lastName: string;
   email: string;
-  avatar: File | null;
+  phone:string;
+  address:string;
+  country:string;
 }
 
 function Profil() {
@@ -17,8 +19,48 @@ function Profil() {
     firstName: '',
     lastName: '',
     email: '',
-    avatar: null,
+    phone : '',
+    address:'',
+    country:'',
   });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const theToken = localStorage.getItem('token')
+        const theUsername = localStorage.getItem('userConnectedUsername')
+
+        const response = await fetch(`http://localhost:3000/getProfile/${theToken}/${theUsername}`);
+
+        // if (!response.ok) {
+        //   console.log("pas de réponse du serveur , c'est normal si l utilisateur viens d'etre créé");
+        //   return;
+        // }
+
+        const responseData = await response.json();
+        // Faites quelque chose avec les données reçues
+        const datasReceived:FormData = {
+          firstName:responseData.firstname,
+          lastName:responseData.lastname,
+          email:responseData.email,
+          phone:responseData.phone,
+          address:responseData.address,
+          country:responseData.country,
+        }
+        setFormData(datasReceived)
+
+        console.log(responseData);
+        
+
+      } catch (error) {
+        console.error('Error fetching profile:', error);
+        // Gérez l'erreur ici si nécessaire
+      }
+    };
+
+    fetchData(); // Appelez la fonction fetchData ici
+
+  }, []);
 
   const handleChange = (e: { target: { name: any; value: any; }; }) => {
     const { name, value } = e.target;
@@ -58,6 +100,9 @@ function Profil() {
           firstname: formData.firstName,
           lastname: formData.lastName,
           email: formData.email,
+          phone:formData.phone,
+          address:formData.address,
+          country:formData.country,
         }),
       });
   
@@ -82,48 +127,64 @@ function Profil() {
       <div className='profile_panel_container'>
         <SectionTitle contenu='Profile'></SectionTitle>
         
-        <div className='profile_panel_inside'>
-          <label className='labelProfile'>
-            Username:
-            <input type="text" name="userName"  defaultValue={localStorage.getItem("userConnectedUsername")! }/>
-          </label>
-          <br />
-          <label className='labelProfile'>
-            Prénom:
-            <input type="text" name="firstName" value={formData.firstName} onChange={handleChange} />
-          </label>
-          <br />
-
-          <label className='labelProfile'>
-            Nom:
-            <input type="text" name="lastName" value={formData.lastName} onChange={handleChange} />
-          </label>
-          <br />
-
-          <label className='labelProfile'>
-            Email:
-            <input type="email" name="email" value={formData.email} onChange={handleChange} />
-          </label>
-          <br />
-
-          {/* <label>
-            Avatar:
-            <input type="file" accept="image/*" onChange={handleAvatarChange} />
-          </label>
-          <br />
-
-          {formData.avatar && (
-            <div>
-              <p>Aperçu de l'avatar:</p>
-              <img src={URL.createObjectURL(formData.avatar)} alt="Avatar Preview" style={{ width: '100px', height: '100px' }} />
+        <div className='top_zone zone' >
+          <div className='basic_infos zone'>
+            <div className='label-input-container'>
+              <label className='labelProfile'>
+                Username:
+              </label>
+                <input type="text" name="userName" defaultValue={localStorage.getItem("userConnectedUsername")!}  disabled />
             </div>
-          )} */}
+            <div className='label-input-container'>
+              <label className='labelProfile'>
+                Prénom:
+              </label>
+                <input type="text" name="firstName" value={formData.firstName} onChange={handleChange} />
+            </div>
+            <div className='label-input-container'>
+              <label className='labelProfile'>
+                Nom:
+              </label>
+                <input type="text" name="lastName" value={formData.lastName} onChange={handleChange} />
+            </div>
+            <div className='label-input-container'>
+              <label className='labelProfile'>
+                Email:
+              </label>
+                <input type="email" name="email" defaultValue={localStorage.getItem("userConnectedEmail")!}  disabled />
+            </div>
+            <div className='label-input-container'>
+              <label className='labelProfile'>
+                Phone:
+              </label>
+                <input type="tel" name="phone" value={formData.phone} onChange={handleChange} />
+            </div>
+            <div className='label-input-container'>
+              <label className='labelProfile'>
+                Address:
+              </label>
+                <input type="string" name="address" value={formData.address} onChange={handleChange} />
+            </div>
+            <div className='label-input-container'>
+              <label className='labelProfile'>
+                Country:
+              </label>
+                <input type="string" name="country" value={formData.country} onChange={handleChange} />
+            </div>
+            <button className='buttonValidateBasicInfos' onClick={handleSubmit}>Valider les modifications</button>
+          </div>
+          <div className='changeAvatar_zone zone'>
 
-          <br />
-
-          <button onClick={handleSubmit} >Valider les modifications</button>
+          </div>
         </div>
-      
+        <div className='changing_zone zone'>
+          <div className='changePassword_zone zone'>
+
+          </div>
+          <div className='changeEmail_zone zone'>
+
+          </div>
+        </div>
       </div>
     </>
   )

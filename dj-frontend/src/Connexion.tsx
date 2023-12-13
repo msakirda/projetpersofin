@@ -90,6 +90,7 @@ function Connection() {
                 setserverResponseCreation(data.response);
                 localStorage.setItem('token', data.token);
                 localStorage.setItem('userConnectedUsername' , decodedToken.username)
+                localStorage.setItem('userConnectedEmail' ,  data.user.email)
                 console.log(localStorage.getItem("userConnectedUsername") );
                 
                 // Réinitialisation des champs du formulaire
@@ -151,6 +152,7 @@ function Connection() {
               setShewPromptConnexion(true)
               localStorage.setItem('token', data.token.toString());
               localStorage.setItem('userConnectedUsername' , decodedToken.username)
+              localStorage.setItem('userConnectedEmail' , data.user.email)
               console.log(localStorage.getItem("userConnectedUsername") );
               // Réinitialisation des champs du formulaire
               setidentifiantConnexion('');

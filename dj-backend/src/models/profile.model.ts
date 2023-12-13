@@ -26,9 +26,17 @@ Profile.init(
         type: DataTypes.STRING,
         allowNull: false,
       },
-    avatar: {
+    phone: {
+    type: DataTypes.STRING,
+    allowNull: true,
+    },
+    address: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
+    },
+    country: {
+        type: DataTypes.STRING,
+        allowNull: true,
     },
   },
   {

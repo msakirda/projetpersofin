@@ -54,7 +54,9 @@ const secretKey = 'mubla_deeps';
   
 
 const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
-  const token = req.body.token;
+  let token = req.body.token;
+  if(!token)
+     token = req.params.token;
 
   if (!token) {
     return res.status(401).json({ message: 'Token missing' });
@@ -84,7 +86,7 @@ app.post('/users/connect', async (req, res) => {
       const token = jwt.sign({ username }, secretKey, { expiresIn: '1h' });
 
       // Return the token to the client
-      res.json({ signedUp: true, message: 'Connection réussie.', token  });
+      res.json({ signedUp: true, message: 'Connection réussie.', token , user });
     } else {
       // User not found or password does not match
       res.json({ signedUp: false, message: 'Mauvais combo username / password.' });
@@ -112,13 +114,15 @@ app.post('/users/create/:username', async (req: Request, res: Response) => {
         firstname: "", // Assuming 'email' is a required field
         lastname: "", // Assuming 'password' is a required field
         email: req.body.email, // Assuming 'password' is a required field
-        avatar: "", // Assuming 'password' is a required field
+        phone: "",
+        address: "",
+        country: "",
       });
 
 
       // Create a token JWT
       const token = jwt.sign( { username: req.params.username } , secretKey, { expiresIn: '1h' });
-      res.json({ signedUp: true, message: 'Compte Utilisateur [${req.params.username}] créé avec succès.', token });
+      res.json({ signedUp: true, message: 'Compte Utilisateur [${req.params.username}] créé avec succès.', token , user });
     } else {
       res.json({ exists: true, response: "Cet Utilisateur existe déjà, création de compte impossible." });
     }
@@ -140,6 +144,9 @@ app.put('/api/updateProfile', authenticateToken, async (req, res) => {
         firstname: req.body.firstname,
         lastname: req.body.lastname,
         email: req.body.email,
+        phone: req.body.phone,
+        address: req.body.address,
+        country: req.body.country,
       },
       { where: { username: req.body.username } }
     );
@@ -155,7 +162,18 @@ app.put('/api/updateProfile', authenticateToken, async (req, res) => {
   }
 });
 
+app.get('/getProfile/:token/:username', authenticateToken , async (req, res) => {
 
+  try {
+    // Find the user in the database
+    const user = await Profile.findOne({ where: { username : req.params.username } });
+    res.json(user);
+    
+  } catch (error) {
+    console.error('Error during user authentication:', error);
+    res.status(500).json({ signedUp: false, message: 'Internal Server Error.' });
+  }
+});
 
 
 

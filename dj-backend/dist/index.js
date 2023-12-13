@@ -54,7 +54,9 @@ app.use((req, res, next) => {
 });
 const secretKey = 'mubla_deeps';
 const authenticateToken = (req, res, next) => {
-    const token = req.body.token;
+    let token = req.body.token;
+    if (!token)
+        token = req.params.token;
     if (!token) {
         return res.status(401).json({ message: 'Token missing' });
     }
@@ -75,7 +77,7 @@ app.post('/users/connect', (req, res) => __awaiter(void 0, void 0, void 0, funct
             // Create a token JWT
             const token = jwt.sign({ username }, secretKey, { expiresIn: '1h' });
             // Return the token to the client
-            res.json({ signedUp: true, message: 'Connection réussie.', token });
+            res.json({ signedUp: true, message: 'Connection réussie.', token, user });
         }
         else {
             // User not found or password does not match
@@ -103,11 +105,13 @@ app.post('/users/create/:username', (req, res) => __awaiter(void 0, void 0, void
                 firstname: "", // Assuming 'email' is a required field
                 lastname: "", // Assuming 'password' is a required field
                 email: req.body.email, // Assuming 'password' is a required field
-                avatar: "", // Assuming 'password' is a required field
+                phone: "",
+                address: "",
+                country: "",
             });
             // Create a token JWT
             const token = jwt.sign({ username: req.params.username }, secretKey, { expiresIn: '1h' });
-            res.json({ signedUp: true, message: 'Compte Utilisateur [${req.params.username}] créé avec succès.', token });
+            res.json({ signedUp: true, message: 'Compte Utilisateur [${req.params.username}] créé avec succès.', token, user });
         }
         else {
             res.json({ exists: true, response: "Cet Utilisateur existe déjà, création de compte impossible." });
@@ -126,6 +130,9 @@ app.put('/api/updateProfile', authenticateToken, (req, res) => __awaiter(void 0,
             firstname: req.body.firstname,
             lastname: req.body.lastname,
             email: req.body.email,
+            phone: req.body.phone,
+            address: req.body.address,
+            country: req.body.country,
         }, { where: { username: req.body.username } });
         if (updatedRowCount > 0) {
             res.json({ message: 'Profil mis à jour avec succès' });
@@ -137,5 +144,16 @@ app.put('/api/updateProfile', authenticateToken, (req, res) => __awaiter(void 0,
     catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Erreur lors de la mise à jour du profil' });
+    }
+}));
+app.get('/getProfile/:token/:username', authenticateToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        // Find the user in the database
+        const user = yield profile_model_1.default.findOne({ where: { username: req.params.username } });
+        res.json(user);
+    }
+    catch (error) {
+        console.error('Error during user authentication:', error);
+        res.status(500).json({ signedUp: false, message: 'Internal Server Error.' });
     }
 }));

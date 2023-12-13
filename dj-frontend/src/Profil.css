@@ -1,9 +1,9 @@
 .profile_panel_container{
     width: 75%;
-    height: auto;
+    height: 100%;
     background-color: aliceblue;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     overflow-y: auto;
@@ -12,19 +12,84 @@
 @media screen and (min-width : 550px)
 {
 
-    
-    .profile_panel_inside{
-        width: 50%;
-        height: 90%;
-        padding: 3%;
-        text-align: justify;
+    .top_zone {
+        
+        width: 100%;
+        height: 70%;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+    }
+    .changeAvatar_zone{
+        background-color: rgb(83, 83, 255);
+        width:30%;
+        height: 100%;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
     }
     
-    .labelProfile{
+    .changing_zone{
+        width: 100%;
+        height: 30%;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+    }
+    .top_zone{
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        border-bottom: 1px black solid;
+    }
+
+    .label-input-container{
+        /* margin: 3%; */
+        width: 50%;
+        height: auto;
+        color: aliceblue;
         display: flex;
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
+    }
+
+    .labelProfile{
+        padding: 3%;
+    }
+
+    .basic_infos {
+        width:70%;
+        height: 100%;
+        border-right: 1px black solid;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background-color: rgb(60, 60, 255);
+    }
+
+    .buttonValidateBasicInfos{
+        height: 10%;
+    }
+    .changing_zone{
+        
+    }
+
+    .changePassword_zone{
+        width: 50%;
+        height: 100%;
+        border-right: 1px solid black;
+        background-color: rgb(122, 122, 255);
+    }
+    .changeEmail_zone{
+        width: 50%;
+        height: 100%;
+        background-color: rgb(145, 145, 255);
     }
 }
 
@@ -32,12 +97,7 @@
 {
 
     
-    .profile_panel_inside{
-        width: 100%;
-        height: 100%;
-        padding: 3%;
-        text-align: justify;
-    }
+
     
     .labelProfile{
         display: block;
