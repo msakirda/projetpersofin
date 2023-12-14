@@ -7,6 +7,8 @@ const jwt = require('jsonwebtoken'); // Importez jsonwebtoken
 import multer from 'multer'; 
 import path from 'path';
 
+
+
 // Création de l'application Express
 const app = express();
 const port = 3000;
@@ -21,6 +23,7 @@ export const sequelize = new Sequelize({
 import User from './models/user.model';
 import Profile from './models/profile.model';
 import { log } from 'console';
+import Userfiles from './models/userfiles.model';
 
 sequelize.sync()
   .then(() => {
@@ -54,9 +57,9 @@ const secretKey = 'mubla_deeps';
   
 
 const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
-  let token = req.body.token;
-  if(!token)
-     token = req.params.token;
+  let token = req.body.token || req.params.token || (req.headers.authorization && req.headers.authorization.split(' ')[1]);
+
+  console.log("token ", token, " va être vérifié.");
 
   if (!token) {
     return res.status(401).json({ message: 'Token missing' });
@@ -70,6 +73,7 @@ const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
     next();
   });
 };
+
 
 
 app.post('/users/connect', async (req, res) => {
@@ -118,7 +122,10 @@ app.post('/users/create/:username', async (req: Request, res: Response) => {
         address: "",
         country: "",
       });
-
+      const newAvatar = await Userfiles.create({
+        username: req.params.username, // Assuming 'username' is a required field
+        avatarUrl: "",
+      });
 
       // Create a token JWT
       const token = jwt.sign( { username: req.params.username } , secretKey, { expiresIn: '1h' });
@@ -174,6 +181,89 @@ app.get('/getProfile/:token/:username', authenticateToken , async (req, res) => 
     res.status(500).json({ signedUp: false, message: 'Internal Server Error.' });
   }
 });
+
+app.post('/api/changePassword', authenticateToken, async (req, res) => {
+  try {
+    const { username, currentPassword, newPassword } = req.body;
+
+    // Vérifiez le mot de passe actuel dans votre modèle utilisateur
+    const user = await User.findOne({ where: { username } });
+
+    if (!user) {
+      return res.status(404).json({ message: 'Utilisateur non trouvé' });
+    }
+
+    // Comparez le mot de passe actuel avec celui fourni dans la requête
+    if (user.password !== currentPassword) {
+      return res.status(401).json({ message: 'Mot de passe actuel incorrect' });
+    }
+
+    // Mettez à jour le mot de passe avec le nouveau mot de passe
+    user.password = newPassword;
+    await user.save();
+
+    res.json({ message: 'Mot de passe mis à jour avec succès' });
+  } catch (error) {
+    console.error('Error changing password:', error);
+    res.status(500).json({ message: 'Erreur lors de la modification du mot de passe' });
+  }
+});
+
+app.post('/api/changeEmail', authenticateToken, async (req, res) => {
+  try {
+    const { username, newEmail } = req.body;
+
+    // Vérifiez le mot de passe actuel dans votre modèle utilisateur
+    const user = await User.findOne({ where: { username } });
+
+    if (!user) {
+      return res.status(404).json({ message: 'Utilisateur non trouvé' });
+    }
+
+
+    // Mettez à jour le mot de passe avec le nouveau mot de passe
+    user.email = newEmail;
+    await user.save();
+
+    res.json({ message: 'Email mis à jour avec succès' });
+  } catch (error) {
+    console.error('Error changing email:', error);
+    res.status(500).json({ message: 'Erreur lors de la modification de l email' });
+  }
+});
+
+//avatar
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/');
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
+  },
+});
+
+const upload = multer({ storage: storage });
+
+app.put('/api/changeAvatar' ,authenticateToken,  upload.single('avatar'), async (req, res) => {
+  try {
+    // You can now access the details of the file in req.file
+    const avatarUrl = req.file ? `http://localhost:3000/uploads/${req.file.filename}` : 'default_avatar_url';
+
+    // Update the avatar URL in the database using Sequelize
+    await Userfiles.update(
+      { avatarUrl: avatarUrl , username : req.body.username },
+      { where: { username: req.body.username } }
+    );
+
+    res.json({ message: 'Avatar changed successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error changing avatar' });
+  }
+});
+
 
 
 

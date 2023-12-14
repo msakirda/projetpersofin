@@ -5,6 +5,7 @@ import React, { useState } from 'react';
 
 // Import du composant MenuBar
 import MenuBar from './MenuBar';
+import SectionTitle from './SectionTitle';
 
 
 // Définition du composant fonctionnel Contact
@@ -39,6 +40,7 @@ const Contact = () => {
   return (
     <>
       <MenuBar ></MenuBar>
+      <SectionTitle contenu="Contact..."></SectionTitle>
       <div className='right_menu'>
         <div className='allContactForm'>
           <h1>Contact-us</h1>

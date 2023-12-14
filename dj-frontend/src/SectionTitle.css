@@ -7,4 +7,7 @@
     border: 1px black solid;
     margin: 0;
     background-color: aqua;
+    opacity: 50%;
+    border-radius: 5%;
+    margin: 2%;
 }

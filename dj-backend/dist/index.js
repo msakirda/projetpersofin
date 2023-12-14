@@ -17,6 +17,8 @@ const express_1 = __importDefault(require("express"));
 const sequelize_1 = require("sequelize");
 const cors = require('cors');
 const jwt = require('jsonwebtoken'); // Importez jsonwebtoken
+const multer_1 = __importDefault(require("multer"));
+const path_1 = __importDefault(require("path"));
 // Création de l'application Express
 const app = (0, express_1.default)();
 const port = 3000;
@@ -28,6 +30,7 @@ exports.sequelize = new sequelize_1.Sequelize({
 });
 const user_model_1 = __importDefault(require("./models/user.model"));
 const profile_model_1 = __importDefault(require("./models/profile.model"));
+const userfiles_model_1 = __importDefault(require("./models/userfiles.model"));
 exports.sequelize.sync()
     .then(() => {
     // Démarrage du serveur Express après la synchronisation
@@ -54,9 +57,8 @@ app.use((req, res, next) => {
 });
 const secretKey = 'mubla_deeps';
 const authenticateToken = (req, res, next) => {
-    let token = req.body.token;
-    if (!token)
-        token = req.params.token;
+    let token = req.body.token || req.params.token || (req.headers.authorization && req.headers.authorization.split(' ')[1]);
+    console.log("token ", token, " va être vérifié.");
     if (!token) {
         return res.status(401).json({ message: 'Token missing' });
     }
@@ -109,6 +111,10 @@ app.post('/users/create/:username', (req, res) => __awaiter(void 0, void 0, void
                 address: "",
                 country: "",
             });
+            const newAvatar = yield userfiles_model_1.default.create({
+                username: req.params.username, // Assuming 'username' is a required field
+                avatarUrl: "",
+            });
             // Create a token JWT
             const token = jwt.sign({ username: req.params.username }, secretKey, { expiresIn: '1h' });
             res.json({ signedUp: true, message: 'Compte Utilisateur [${req.params.username}] créé avec succès.', token, user });
@@ -155,5 +161,69 @@ app.get('/getProfile/:token/:username', authenticateToken, (req, res) => __await
     catch (error) {
         console.error('Error during user authentication:', error);
         res.status(500).json({ signedUp: false, message: 'Internal Server Error.' });
+    }
+}));
+app.post('/api/changePassword', authenticateToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { username, currentPassword, newPassword } = req.body;
+        // Vérifiez le mot de passe actuel dans votre modèle utilisateur
+        const user = yield user_model_1.default.findOne({ where: { username } });
+        if (!user) {
+            return res.status(404).json({ message: 'Utilisateur non trouvé' });
+        }
+        // Comparez le mot de passe actuel avec celui fourni dans la requête
+        if (user.password !== currentPassword) {
+            return res.status(401).json({ message: 'Mot de passe actuel incorrect' });
+        }
+        // Mettez à jour le mot de passe avec le nouveau mot de passe
+        user.password = newPassword;
+        yield user.save();
+        res.json({ message: 'Mot de passe mis à jour avec succès' });
+    }
+    catch (error) {
+        console.error('Error changing password:', error);
+        res.status(500).json({ message: 'Erreur lors de la modification du mot de passe' });
+    }
+}));
+app.post('/api/changeEmail', authenticateToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { username, newEmail } = req.body;
+        // Vérifiez le mot de passe actuel dans votre modèle utilisateur
+        const user = yield user_model_1.default.findOne({ where: { username } });
+        if (!user) {
+            return res.status(404).json({ message: 'Utilisateur non trouvé' });
+        }
+        // Mettez à jour le mot de passe avec le nouveau mot de passe
+        user.email = newEmail;
+        yield user.save();
+        res.json({ message: 'Email mis à jour avec succès' });
+    }
+    catch (error) {
+        console.error('Error changing email:', error);
+        res.status(500).json({ message: 'Erreur lors de la modification de l email' });
+    }
+}));
+//avatar
+const storage = multer_1.default.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'uploads/');
+    },
+    filename: function (req, file, cb) {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, file.fieldname + '-' + uniqueSuffix + path_1.default.extname(file.originalname));
+    },
+});
+const upload = (0, multer_1.default)({ storage: storage });
+app.put('/api/changeAvatar', authenticateToken, upload.single('avatar'), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        // You can now access the details of the file in req.file
+        const avatarUrl = req.file ? `http://localhost:3000/uploads/${req.file.filename}` : 'default_avatar_url';
+        // Update the avatar URL in the database using Sequelize
+        yield userfiles_model_1.default.update({ avatarUrl: avatarUrl, username: req.body.username }, { where: { username: req.body.username } });
+        res.json({ message: 'Avatar changed successfully' });
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error changing avatar' });
     }
 }));

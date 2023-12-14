@@ -2,6 +2,7 @@ import './App.css'
 import React from 'react';
 import MenuBar from './MenuBar';
 import './About.css'
+import SectionTitle from './SectionTitle';
 
 
 function About() {
@@ -10,7 +11,7 @@ function About() {
     return (
       <>
         <MenuBar ></MenuBar>
-      
+        <SectionTitle contenu="About..."></SectionTitle>
           
       <div className='right_part'>
           <header>
