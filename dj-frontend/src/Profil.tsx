@@ -323,16 +323,21 @@ function Profil() {
             <button className='buttonValidateBasicInfos' onClick={handleSubmit}>Valider les modifications</button>
           </div>
           <div className='changeAvatar_zone zone'>
-            <div className='label-input-container'>
-              <label className='labelProfile'>Nouvel Avatar:</label>
-              <input type="file" accept="image/*" onChange={handleAvatarChange} />
-            </div>
-            {avatar && (
-              <div>
-                <p>Aperçu de l'avatar actuel:</p>
-                <img src={avatar!} alt="Avatar Preview" style={{ width: '100px', height: '100px' }} />
-              </div>
-            )}
+          <input type="file" name="file" id="file" className="inputfile" onChange={handleAvatarChange}/>
+          <label htmlFor="file">Choose a file</label>
+
+              
+              {
+              
+              avatar ? (
+                <div>
+                  <img src={avatar!} alt="Avatar Preview" style={{ width: '100px', height: '100px' }} />
+                </div>
+              )
+                :
+                <img className="imageProfile" src="../prof.png" alt=""  />
+
+            }
             <button onClick={handleAvatarSubmit}>Changer l'avatar</button>
 </div>
 
