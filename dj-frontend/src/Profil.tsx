@@ -42,17 +42,13 @@ function Profil() {
 
 
   useEffect(() => {
+    ///////////////////////////////////////////////////////get Profile infos
     const fetchData = async () => {
       try {
         const theToken = localStorage.getItem('token')
         const theUsername = localStorage.getItem('userConnectedUsername')
 
         const response = await fetch(`http://localhost:3000/getProfile/${theToken}/${theUsername}`);
-
-        // if (!response.ok) {
-        //   console.log("pas de réponse du serveur , c'est normal si l utilisateur viens d'etre créé");
-        //   return;
-        // }
 
         const responseData = await response.json();
         // Faites quelque chose avec les données reçues
@@ -77,6 +73,31 @@ function Profil() {
 
     fetchData(); // Appelez la fonction fetchData ici
 
+    ///////////////////////////////////////////////////////get avatar
+    const fetchAvatar = async () => {
+      try {
+        const theToken = localStorage.getItem('token');
+        const theUsername = localStorage.getItem('userConnectedUsername');
+    
+        const response = await fetch(`http://localhost:3000/getAvatar/${theToken}/${theUsername}`);
+    
+        const responseData = await response.json();
+        const avatarUrl = responseData.avatarUrl;
+        localStorage.setItem("userConnectedAvatarUrl" , avatarUrl);
+    
+        // Maintenant, vous avez l'URL de l'avatar
+        console.log('Avatar URL:', avatarUrl);
+    
+        // Vous pouvez maintenant utiliser cette URL pour afficher l'image dans votre composant React
+        setAvatar(avatarUrl);
+      } catch (error) {
+        console.error('Error fetching avatar:', error);
+        // Gérez l'erreur ici si nécessaire
+      }
+    };
+    
+
+    fetchAvatar(); // Appelez la fonction fetchData ici
   }, []);
 
   const handleChange = (e: { target: { name: any; value: any; }; }) => {
@@ -330,12 +351,12 @@ function Profil() {
               {
               
               avatar ? (
-                <div>
+                <div className='imageProfilDiv'>
                   <img src={avatar!} alt="Avatar Preview" style={{ width: '100px', height: '100px' }} />
                 </div>
               )
                 :
-                <img className="imageProfile" src="../prof.png" alt=""  />
+                <img className="imageProfileUndefined" src="../prof.png" alt=""  />
 
             }
             <button onClick={handleAvatarSubmit}>Changer l'avatar</button>

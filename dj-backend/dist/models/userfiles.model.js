@@ -16,7 +16,7 @@ Userfiles.init({
     },
 }, {
     sequelize: index_1.sequelize,
-    modelName: 'userfiles',
+    modelName: 'Userfiles',
     tableName: 'userfiless',
 });
 exports.default = Userfiles;

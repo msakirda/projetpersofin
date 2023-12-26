@@ -47,8 +47,8 @@
 
     .Fond_container {
         background-color: #5D96EB;
-        width: 400px;
-        height: 700px;
+        width: auto;
+        height: 80%;
         text-align: center;
         padding: 3%;
     }
@@ -91,19 +91,21 @@
 
 
     .Information_de_connexion {
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        align-items: flex-start;
-        height: 65%;
-
-    }
-    .Information_de_connexion_connexion{
-        display: flex;
+        display: block;
         flex-direction: column;
         justify-content: space-between;
         align-items: flex-start;
         height: auto;
+        overflow: auto;
+
+    }
+    .Information_de_connexion_connexion{
+        display: block;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: flex-start;
+        height: auto;
+        overflow: auto;
     }
     
     .Information_de_connexion label {
@@ -127,12 +129,15 @@
         height: 100%;
         margin: 0;
         padding: 0;
+        overflow: auto;
+        display: block;
     }
 
     .Fond_container {
         background-color: #5D96EB;
         width: 100%;
         height: 100%;
+        overflow: auto;
     }
 
     .menu_droite {

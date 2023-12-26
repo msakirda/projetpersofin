@@ -8,6 +8,7 @@ import './MenuBar.css';
 
 // Import de la bibliothèque crypto-js pour les opérations de hachage
 import { isExpired, decodeToken } from "react-jwt";
+import { jwtDecode } from "jwt-decode";
 
 // Définition du composant fonctionnel MenuBar
 function MenuBar() {
@@ -28,10 +29,15 @@ function MenuBar() {
   }
 
   const handleLogout = () => {
-    setUserConnected('#UserIncognito');
-    localStorage.removeItem('token')
-    localStorage.setItem('userConnectedUsername' , '#UserIncognito');
-    console.log("deconnexion.");
+    if(userConnected !== '#UserIncognito')
+    {
+      setUserConnected('#UserIncognito');
+      localStorage.removeItem('token')
+      localStorage.setItem('userConnectedUsername' , '#UserIncognito');
+      console.log("deconnexion.");
+      navigate('/')
+
+    }
   };
 
   useEffect(() => {
@@ -69,6 +75,14 @@ function MenuBar() {
     else{
       handleLogout();
     }
+
+    setInterval(()=>{
+      const token = localStorage.getItem("token")
+      if(! token || isExpired(token))
+      {
+        handleLogout();
+      }
+    } , 1000)
   }, []);
 
 
@@ -105,7 +119,10 @@ function MenuBar() {
                   <Link className="menuOption" to="/Profil">
                     <div className="menuSection">
                       {/* Composant de profil (image, etc.) */}
-                      <img id="image_profile" src="prof.png" alt="Profil" />
+                      
+                      <img id="image_profile" src={userConnected !== "#UserIncognito"
+                      ? localStorage.getItem("userConnectedAvatarUrl")! 
+                      : "prof.png"} alt="Profil" />
                       {userConnected} (Profile)
                     </div>
                   </Link>
@@ -122,17 +139,17 @@ function MenuBar() {
             New Project
           </div>
         </Link>
-        <Link className="menuOption" to="/Sharing">
+        {/* <Link className="menuOption" to="/Sharing">
           <div className="menuSection">
             Sharing
           </div>
-        </Link>
+        </Link> */}
       </div>
 
       {/* Section du menu gauche (bas) */}
       <div className='Menu_gauche_bas'>
         {userConnected === "#UserIncognito"  ? <></> : 
-          <Link className="menuOption" to="/About" onClick={handleLogout}>
+          <Link className="menuOption" to="/" onClick={handleLogout}>
           <div className="deconnexionLink menuSection" >
             Deconnexion
           </div>

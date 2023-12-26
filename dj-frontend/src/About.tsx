@@ -14,11 +14,11 @@ function About() {
         <SectionTitle contenu="About..."></SectionTitle>
           
       <div className='right_part'>
-          <header>
+          <header className='headerAbout'>
             <h1>About SpeedAlbum</h1>
           </header>
 
-          <section>
+          <section className='sectionAbout'>
             <h2>Our Story</h2>
             <p>Welcome to SpeedAlbum, where creating stunning video slideshows is as easy as 1-2-3. We believe in simplicity and creativity.</p>
 

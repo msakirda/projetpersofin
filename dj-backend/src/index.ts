@@ -43,6 +43,7 @@ app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', 'http://127.0.0.1:5173');
   res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+app.use('/uploads', express.static('uploads'));//for the server to be able to serve images
   
   // Handle preflight requests
   if (req.method === 'OPTIONS') {
@@ -261,6 +262,22 @@ app.put('/api/changeAvatar' ,authenticateToken,  upload.single('avatar'), async 
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Error changing avatar' });
+  }
+});
+
+app.get('/getAvatar/:token/:username', async (req, res) => {
+  try {
+    const userFiles = await Userfiles.findOne({ where: { username: req.params.username } });
+
+    if (!userFiles) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const avatarUrl = userFiles.avatarUrl;
+    res.json({ avatarUrl });
+  } catch (error) {
+    console.error('Error fetching avatar:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
   }
 });
 

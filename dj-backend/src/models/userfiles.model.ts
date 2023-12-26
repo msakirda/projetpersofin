@@ -20,7 +20,7 @@ Userfiles.init(
   },
   {
     sequelize,
-    modelName: 'userfiles',
+    modelName: 'Userfiles',
     tableName: 'userfiless',
   }
 );
