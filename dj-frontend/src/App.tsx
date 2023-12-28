@@ -9,6 +9,7 @@ import Contact from './Contact';
 import Connexion from './Connexion';
 import Profil from "./Profil"
 import Sharing from './Sharing';
+import MyProjects from './MyProjects';
 
 
 // Création d'une instance de BrowserRouter avec les différentes routes
@@ -42,6 +43,10 @@ const router = createBrowserRouter([
   {
     path: "/Sharing", // route pour la page sharing
     element:<Sharing />
+  },
+  {
+    path: "/MyProjects", // route pour la page sharing
+    element:<MyProjects />
   }
 
 ]);

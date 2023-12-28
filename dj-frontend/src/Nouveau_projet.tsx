@@ -1,6 +1,10 @@
 import React, { useCallback, useState, useRef, useEffect } from 'react';
 import './Nouveau_projet.css';
 import MenuBar from './MenuBar';
+import MiddlePage from './MiddlePage';
+import NavBar from './NavBar';
+
+
 
 const Nouveau_projet = () => {
   const [numPages, setNumPages] = useState(3);
@@ -8,7 +12,9 @@ const Nouveau_projet = () => {
   const scrollerRef = useRef<HTMLDivElement>(null);
 
   const handleNumPagesChange = useCallback((e: { target: { value: string; }; }) => {
-    setNumPages(parseInt(e.target.value, 10) || 1);
+    let newNumPages = parseInt(e.target.value, 10) || 1;
+    newNumPages = Math.min(99, Math.max(1, newNumPages));
+    setNumPages(newNumPages);
     setCurrentPage(0);
   }, []);
 
@@ -25,7 +31,7 @@ const Nouveau_projet = () => {
   }, []);
 
   const handleLastPage = useCallback(() => {
-    setCurrentPage(numPages -1);
+    setCurrentPage(numPages - 1);
   }, [numPages]);
 
   useEffect(() => {
@@ -41,32 +47,30 @@ const Nouveau_projet = () => {
     const pages = [];
 
     for (let i = 0; i < numPages; i++) {
-      pages.push(
-        
-        <div
-          key={i}
-          className={`slider-page ${i === currentPage ? 'current' : ''}`}
-          id={`page${i + 1}`}
-        >
-          <div className="slidingButtonsZone">
-            <button onClick={handleFirstPage} disabled={currentPage === 0}>
-              First Page
-            </button>
-            <button onClick={handlePrevPage} disabled={currentPage === 0}>
-              Previous Page
-            </button>
-            <button onClick={handleNextPage} disabled={currentPage === numPages - 1}>
-              Next Page
-            </button>
-            <button onClick={handleLastPage} disabled={currentPage === numPages - 1}>
-              Last Page
-            </button>
-            <p>Page {i + 2}</p>
+      if (i === 0) {
+        // Première page
+        pages.push(
+          <div key={i} className={`slider-page firstPage`} id={`page${i + 1}`}>
+            <NavBar  pageIndex={i} currentPage={currentPage} numPages={numPages} handleFirstPage={handleFirstPage} handlePrevPage={handlePrevPage} handleNextPage={handleNextPage} handleLastPage={handleLastPage}></NavBar>
+
+            <label>
+              Number of Pages:
+              <input type='number' value={numPages} onChange={handleNumPagesChange} min={1} max={99} />
+            </label>
           </div>
-          {/* Contenu de la page */}
-          
-        </div>
-      );
+        );
+      } else if (i === numPages - 1) {
+        // Dernière page
+        pages.push(
+          <div key={i} className={`slider-page lastPage`} id={`page${i + 1}`}>
+              <NavBar  pageIndex={i} currentPage={currentPage} numPages={numPages} handleFirstPage={handleFirstPage} handlePrevPage={handlePrevPage} handleNextPage={handleNextPage} handleLastPage={handleLastPage}></NavBar>
+
+          </div>
+        )
+      } else {
+        // Pages du milieu
+        pages.push(<MiddlePage key={i} pageIndex={i} currentPage={currentPage} numPages={numPages} handleFirstPage={handleFirstPage} handlePrevPage={handlePrevPage} handleNextPage={handleNextPage} handleLastPage={handleLastPage} />);
+      }
     }
 
     return pages;
@@ -74,58 +78,16 @@ const Nouveau_projet = () => {
 
   return (
     <>
-    <MenuBar></MenuBar>
-    <div className='slider-container'>
-      <div className='slider-scroller' ref={scrollerRef}>
-        <div className='slider-page firstPage'>
-          <label>
-            Number of Pages:
-            <input type='number' value={numPages} onChange={handleNumPagesChange} min={1} />
-          </label>
-          <div className='slidingButtonsZone'>
-            <button onClick={handleFirstPage} disabled={currentPage === 0}>
-              First Page
-            </button>
-            <button onClick={handlePrevPage} disabled={currentPage === 0}>
-              Previous Page
-            </button>
-            <button onClick={handleNextPage} disabled={currentPage === numPages - 1}>
-              Next Page
-            </button>
-            <button onClick={handleLastPage} disabled={currentPage === numPages - 1}>
-              Last Page
-            </button>
-            <p>Page {currentPage}</p>
-          </div>
-        </div>
-        {renderPages()}
-        <div className='slider-page lastPage'>
-          <label>
-            Number of Pages:
-            <input type='number' value={numPages} onChange={handleNumPagesChange} min={1} />
-          </label>
-          <div className='slidingButtonsZone'>
-            <button onClick={handleFirstPage} disabled={currentPage === 0}>
-              First Page
-            </button>
-            <button onClick={handlePrevPage} disabled={currentPage === 0}>
-              Previous Page
-            </button>
-            <button onClick={handleNextPage} disabled={currentPage === numPages - 1}>
-              Next Page
-            </button>
-            <button onClick={handleLastPage} disabled={currentPage === numPages - 1}>
-              Last Page
-            </button>
-            <p>Page {currentPage}</p>
-          </div>
+      <MenuBar></MenuBar>
+      <div className='slider-container'>
+        <div className='slider-scroller' ref={scrollerRef}>
+          
+          {renderPages()}
+          
         </div>
       </div>
-    </div>
     </>
   );
 };
 
 export default Nouveau_projet;
-
-

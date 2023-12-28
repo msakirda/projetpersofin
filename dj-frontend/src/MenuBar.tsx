@@ -144,6 +144,15 @@ function MenuBar() {
             Sharing
           </div>
         </Link> */}
+        {(userConnected !== "#UserIncognito" ? 
+          <Link className="menuOption" to="/MyProjects">
+            <div className="Titre_MyProjects menuSection">
+              My Projects
+            </div>
+          </Link> 
+          : 
+          <></>
+        )}
       </div>
 
       {/* Section du menu gauche (bas) */}

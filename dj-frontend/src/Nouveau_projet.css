@@ -22,13 +22,8 @@
   /* overflow: auto; */
   box-sizing: border-box;
   padding: 20px;
-  border: 1px solid #ccc;
+  /* border: 1px solid #ccc; */
   text-align: center;
-}
-
-/* Styles pour la classe "current" */
-#current {
-  background-color: darkblue;
 }
 
 /* Styles pour les boutons */
@@ -41,7 +36,7 @@ button:hover {
   background-color: #ddd;
 }
 
-.slidingButtonsZone{
+.navBar{
   border-bottom: 1px solid black;
-  padding-bottom: 2%;
+  padding-bottom: 1%;
 }
