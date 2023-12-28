@@ -20,7 +20,7 @@ React.FC<{ pageIndex: number, currentPage: number, numPages: number, handleFirst
         <button onClick={handleLastPage} disabled={currentPage === numPages - 1}>
           Last Page
         </button>
-        <p>Page {pageIndex + 1}</p>
+        <p>Page {pageIndex === 0 ? "Settings" : pageIndex === numPages -1 ? "Final Page" : pageIndex }</p>
       </div>
 
     );

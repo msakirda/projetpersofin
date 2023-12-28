@@ -4,8 +4,6 @@ import MenuBar from './MenuBar';
 import MiddlePage from './MiddlePage';
 import NavBar from './NavBar';
 
-
-
 const Nouveau_projet = () => {
   const [numPages, setNumPages] = useState(3);
   const [currentPage, setCurrentPage] = useState(0);
@@ -23,7 +21,7 @@ const Nouveau_projet = () => {
   }, [numPages]);
 
   const handleNextPage = useCallback(() => {
-    setCurrentPage((prevPage) => Math.min(prevPage + 1, numPages - 1));
+    setCurrentPage((prevPage) => Math.min(prevPage + 1, numPages + 1));
   }, [numPages]);
 
   const handlePrevPage = useCallback(() => {
@@ -31,7 +29,7 @@ const Nouveau_projet = () => {
   }, []);
 
   const handleLastPage = useCallback(() => {
-    setCurrentPage(numPages - 1);
+    setCurrentPage(numPages + 1);
   }, [numPages]);
 
   useEffect(() => {
@@ -46,32 +44,28 @@ const Nouveau_projet = () => {
   const renderPages = () => {
     const pages = [];
 
+    // Première page
+    pages.push(
+      <div key="firstPage" className={`slider-page firstPage`}>
+        <NavBar pageIndex={0} currentPage={currentPage} numPages={numPages + 2} handleFirstPage={handleFirstPage} handlePrevPage={handlePrevPage} handleNextPage={handleNextPage} handleLastPage={handleLastPage} />
+        <label>
+          Number of Pages:
+          <input type='number' value={numPages} onChange={handleNumPagesChange} min={1} max={99} />
+        </label>
+      </div>
+    );
+
+    // Pages du milieu
     for (let i = 0; i < numPages; i++) {
-      if (i === 0) {
-        // Première page
-        pages.push(
-          <div key={i} className={`slider-page firstPage`} id={`page${i + 1}`}>
-            <NavBar  pageIndex={i} currentPage={currentPage} numPages={numPages} handleFirstPage={handleFirstPage} handlePrevPage={handlePrevPage} handleNextPage={handleNextPage} handleLastPage={handleLastPage}></NavBar>
-
-            <label>
-              Number of Pages:
-              <input type='number' value={numPages} onChange={handleNumPagesChange} min={1} max={99} />
-            </label>
-          </div>
-        );
-      } else if (i === numPages - 1) {
-        // Dernière page
-        pages.push(
-          <div key={i} className={`slider-page lastPage`} id={`page${i + 1}`}>
-              <NavBar  pageIndex={i} currentPage={currentPage} numPages={numPages} handleFirstPage={handleFirstPage} handlePrevPage={handlePrevPage} handleNextPage={handleNextPage} handleLastPage={handleLastPage}></NavBar>
-
-          </div>
-        )
-      } else {
-        // Pages du milieu
-        pages.push(<MiddlePage key={i} pageIndex={i} currentPage={currentPage} numPages={numPages} handleFirstPage={handleFirstPage} handlePrevPage={handlePrevPage} handleNextPage={handleNextPage} handleLastPage={handleLastPage} />);
-      }
+      pages.push(<MiddlePage key={i} pageIndex={i + 1} currentPage={currentPage} numPages={numPages + 2} handleFirstPage={handleFirstPage} handlePrevPage={handlePrevPage} handleNextPage={handleNextPage} handleLastPage={handleLastPage} />);
     }
+
+    // Dernière page
+    pages.push(
+      <div key="lastPage" className={`slider-page lastPage`}>
+        <NavBar pageIndex={numPages + 1} currentPage={currentPage} numPages={numPages + 2} handleFirstPage={handleFirstPage} handlePrevPage={handlePrevPage} handleNextPage={handleNextPage} handleLastPage={handleLastPage} />
+      </div>
+    );
 
     return pages;
   };
@@ -81,9 +75,7 @@ const Nouveau_projet = () => {
       <MenuBar></MenuBar>
       <div className='slider-container'>
         <div className='slider-scroller' ref={scrollerRef}>
-          
           {renderPages()}
-          
         </div>
       </div>
     </>
