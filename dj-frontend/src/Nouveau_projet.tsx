@@ -3,11 +3,15 @@ import './Nouveau_projet.css';
 import MenuBar from './MenuBar';
 import MiddlePage from './MiddlePage';
 import NavBar from './NavBar';
+import ffmpeg from 'fluent-ffmpeg';
+
 
 const Nouveau_projet = () => {
   const [numPages, setNumPages] = useState(3);
   const [currentPage, setCurrentPage] = useState(0);
   const scrollerRef = useRef<HTMLDivElement>(null);
+  const [middlePagesImages, setMiddlePagesImages] = useState<Array<File>>([]); // Nouvel état pour stocker les fichiers d'image
+  
 
   const handleNumPagesChange = useCallback((e: { target: { value: string; }; }) => {
     let newNumPages = parseInt(e.target.value, 10) || 1;
@@ -41,6 +45,38 @@ const Nouveau_projet = () => {
     }
   }, [currentPage]);
 
+  
+
+  // const generateVideo = () => {
+  //   const outputFileName = 'output.mp4';
+  //   const images: string[] = [];
+  
+
+  
+  //   // Ajoutez les images des pages intermédiaires
+  //   middlePagesImages.forEach((file) => {
+  //     const imageUrl = URL.createObjectURL(file);
+  //     images.push(imageUrl);
+  //   });
+  
+  //   // Commande FFmpeg pour la conversion d'images en vidéo avec musique
+  //   ffmpeg()
+  //     .input(images.join(' '))
+  //     .inputFPS(3)  // Définissez la fréquence d'images par seconde
+  //     .outputOptions('-c:v libx264 -pix_fmt yuv420p')
+  //     .output(outputFileName)
+  //     .on('end', () => {
+  //       console.log('Génération de la vidéo terminée !');
+  //     })
+  //     .on('error', (err: any) => {
+  //       console.error('Erreur lors de la génération de la vidéo :', err);
+  //     })
+  //     .run();
+  // };
+
+  
+
+
   const renderPages = () => {
     const pages = [];
 
@@ -56,16 +92,21 @@ const Nouveau_projet = () => {
     );
 
     // Pages du milieu
+    let tmpPage
     for (let i = 0; i < numPages; i++) {
-      pages.push(<MiddlePage key={i} pageIndex={i + 1} currentPage={currentPage} numPages={numPages + 2} handleFirstPage={handleFirstPage} handlePrevPage={handlePrevPage} handleNextPage={handleNextPage} handleLastPage={handleLastPage} />);
+      tmpPage = <MiddlePage key={i} pageIndex={i + 1} currentPage={currentPage} numPages={numPages + 2} handleFirstPage={handleFirstPage} handlePrevPage={handlePrevPage} handleNextPage={handleNextPage} handleLastPage={handleLastPage} />
+      pages.push(tmpPage);
     }
+    
 
     // Dernière page
     pages.push(
       <div key="lastPage" className={`slider-page lastPage`}>
         <NavBar pageIndex={numPages + 1} currentPage={currentPage} numPages={numPages + 2} handleFirstPage={handleFirstPage} handlePrevPage={handlePrevPage} handleNextPage={handleNextPage} handleLastPage={handleLastPage} />
+        {/* <button onClick={generateVideo}>Générer la vidéo</button> */}
       </div>
     );
+
 
     return pages;
   };

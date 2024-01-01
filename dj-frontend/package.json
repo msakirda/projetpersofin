@@ -10,12 +10,15 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@ffmpeg/ffmpeg": "^0.12.10",
     "@types/jwt-decode": "^3.1.0",
     "@types/react-router-dom": "^5.3.3",
     "bcrypt": "^5.1.1",
     "bcryptjs": "^2.4.3",
     "buffer": "^6.0.3",
     "crypto-js": "^4.2.0",
+    "ffmpeg-static": "^5.2.0",
+    "fluent-ffmpeg": "^2.1.2",
     "jsonwebtoken": "^8.5.1",
     "jsrsasign": "^10.9.0",
     "jws": "^4.0.0",
@@ -28,6 +31,7 @@
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
     "@types/crypto-js": "^4.2.1",
+    "@types/fluent-ffmpeg": "^2.1.24",
     "@types/jsonwebtoken": "^9.0.5",
     "@types/jsonwebtoken-promisified": "^1.0.4",
     "@types/react": "^18.2.37",
