@@ -1,6 +1,6 @@
 // Import des composants nécessaires depuis les bibliothèques React et React Router DOM
-import { Link, Navigate, useNavigate } from "react-router-dom";
-import React, { useCallback, useState, useEffect } from "react";
+import { Link,  useNavigate } from "react-router-dom";
+import  { useCallback, useState, useEffect } from "react";
 
 // Import des styles CSS 
 import './App.css'
@@ -8,7 +8,7 @@ import './MenuBar.css';
 
 // Import de la bibliothèque crypto-js pour les opérations de hachage
 import { isExpired, decodeToken } from "react-jwt";
-import { jwtDecode } from "jwt-decode";
+
 
 // Définition du composant fonctionnel MenuBar
 function MenuBar() {

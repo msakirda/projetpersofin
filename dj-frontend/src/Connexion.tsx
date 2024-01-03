@@ -1,7 +1,7 @@
-import { Link, useNavigate } from 'react-router-dom';
+import {  useNavigate } from 'react-router-dom';
 import './App.css'
 import './Connexion.css'
-import React, { useCallback, useState } from 'react';
+import  { useCallback, useState } from 'react';
 import MenuBar from './MenuBar';
 import SectionTitle from './SectionTitle';
 import { decodeToken } from 'react-jwt';

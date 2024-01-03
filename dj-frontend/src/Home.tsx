@@ -1,5 +1,5 @@
 // Import des modules React, Link pour les liens react-router, CSS et MenuBar
-import { Link } from 'react-router-dom'
+
 import './App.css'
 import './Home.css'
 import MenuBar from './MenuBar'

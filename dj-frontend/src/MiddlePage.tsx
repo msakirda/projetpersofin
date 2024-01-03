@@ -4,22 +4,25 @@ import { ChangeEvent, useCallback, useState } from "react";
 
 // Nouveau composant pour représenter une page du milieu
 const MiddlePage: 
-React.FC<{ pageIndex: number, currentPage: number, numPages: number, handleFirstPage: () => void, handlePrevPage: () => void, handleNextPage: () => void, handleLastPage: () => void }>
-= ( { pageIndex, currentPage, numPages, handleFirstPage, handlePrevPage, handleNextPage, handleLastPage }) => {
+React.FC<{ middlePagesImages: any,updateMiddlePagesImages: any , pageIndex: number, currentPage: number, numPages: number, handleFirstPage: () => void, handlePrevPage: () => void, handleNextPage: () => void, handleLastPage: () => void }>
+= ( { middlePagesImages , updateMiddlePagesImages, pageIndex, currentPage, numPages, handleFirstPage, handlePrevPage, handleNextPage, handleLastPage }) => {
     
     const [imageUrl, setImageUrl] = useState<string >("");
-    const [imageFile, setImageFile] = useState<File >();
 
     const handleImageChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-        const files = e.target.files;
+      const files = e.target.files;
     
-        if (files && files.length > 0) {
-          const file = files[0];
-          const imageUrlTMP = URL.createObjectURL(file);
-          setImageUrl(imageUrlTMP);
-          setImageFile(file);
-        }
-    } , []);
+      if (files && files.length > 0) {
+        const file = files[0];
+        const imageUrlTMP = URL.createObjectURL(file);
+        setImageUrl(imageUrlTMP);
+        
+        const newTab = [...middlePagesImages , file]
+        // Appeler la fonction de mise à jour directe depuis le parent
+        updateMiddlePagesImages(newTab);
+
+      }
+    }, [updateMiddlePagesImages]);
 
     return (
     <div className={`slider-page ${pageIndex === currentPage ? 'current' : ''}`} id={`page${pageIndex}`}>

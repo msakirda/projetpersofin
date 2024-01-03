@@ -1,6 +1,6 @@
 import './App.css'
 import './Profil.css'
-import React, { ChangeEvent, ChangeEventHandler, useEffect, useState } from 'react';
+import  { ChangeEvent, useEffect, useState } from 'react';
 import MenuBar from './MenuBar';
 import SectionTitle from './SectionTitle';
 

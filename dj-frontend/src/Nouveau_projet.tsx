@@ -1,9 +1,10 @@
-import React, { useCallback, useState, useRef, useEffect } from 'react';
+import  { useCallback, useState, useRef, useEffect } from 'react';
 import './Nouveau_projet.css';
 import MenuBar from './MenuBar';
 import MiddlePage from './MiddlePage';
 import NavBar from './NavBar';
-import ffmpeg from 'fluent-ffmpeg';
+
+
 
 
 const Nouveau_projet = () => {
@@ -12,6 +13,13 @@ const Nouveau_projet = () => {
   const scrollerRef = useRef<HTMLDivElement>(null);
   const [middlePagesImages, setMiddlePagesImages] = useState<Array<File>>([]); // Nouvel état pour stocker les fichiers d'image
   
+
+
+  const updateMiddlePagesImages = (newImages: File[]) => {
+    setMiddlePagesImages(newImages);
+    console.log(newImages);
+    
+  };
 
   const handleNumPagesChange = useCallback((e: { target: { value: string; }; }) => {
     let newNumPages = parseInt(e.target.value, 10) || 1;
@@ -36,47 +44,43 @@ const Nouveau_projet = () => {
     setCurrentPage(numPages + 1);
   }, [numPages]);
 
-  useEffect(() => {
+  const scrollToCurrent = () =>{
     if (scrollerRef.current) {
       (scrollerRef.current as HTMLDivElement).scrollTo({
         left: currentPage * (scrollerRef.current as HTMLDivElement).clientWidth,
         behavior: 'smooth',
       });
     }
+  }
+
+  useEffect(() => {
+    scrollToCurrent();
+  }, [currentPage ]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      // Code à exécuter lors du redimensionnement de la fenêtre
+      scrollToCurrent()
+      console.log('La fenêtre a été redimensionnée !');
+    };
+
+    // Ajouter un écouteur d'événements pour le redimensionnement de la fenêtre
+    window.addEventListener('resize', handleResize);
+
+    // Nettoyer l'écouteur d'événements lorsque le composant est démonté
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
   }, [currentPage]);
 
-  
-
-  // const generateVideo = () => {
-  //   const outputFileName = 'output.mp4';
-  //   const images: string[] = [];
-  
-
-  
-  //   // Ajoutez les images des pages intermédiaires
-  //   middlePagesImages.forEach((file) => {
-  //     const imageUrl = URL.createObjectURL(file);
-  //     images.push(imageUrl);
-  //   });
-  
-  //   // Commande FFmpeg pour la conversion d'images en vidéo avec musique
-  //   ffmpeg()
-  //     .input(images.join(' '))
-  //     .inputFPS(3)  // Définissez la fréquence d'images par seconde
-  //     .outputOptions('-c:v libx264 -pix_fmt yuv420p')
-  //     .output(outputFileName)
-  //     .on('end', () => {
-  //       console.log('Génération de la vidéo terminée !');
-  //     })
-  //     .on('error', (err: any) => {
-  //       console.error('Erreur lors de la génération de la vidéo :', err);
-  //     })
-  //     .run();
-  // };
-
+  const generateVideo = async () => {
+    
+  };
   
 
 
+  
+  
   const renderPages = () => {
     const pages = [];
 
@@ -94,7 +98,7 @@ const Nouveau_projet = () => {
     // Pages du milieu
     let tmpPage
     for (let i = 0; i < numPages; i++) {
-      tmpPage = <MiddlePage key={i} pageIndex={i + 1} currentPage={currentPage} numPages={numPages + 2} handleFirstPage={handleFirstPage} handlePrevPage={handlePrevPage} handleNextPage={handleNextPage} handleLastPage={handleLastPage} />
+      tmpPage = <MiddlePage key={i} middlePagesImages={middlePagesImages} updateMiddlePagesImages={updateMiddlePagesImages} pageIndex={i + 1} currentPage={currentPage} numPages={numPages + 2} handleFirstPage={handleFirstPage} handlePrevPage={handlePrevPage} handleNextPage={handleNextPage} handleLastPage={handleLastPage} />
       pages.push(tmpPage);
     }
     
@@ -103,7 +107,8 @@ const Nouveau_projet = () => {
     pages.push(
       <div key="lastPage" className={`slider-page lastPage`}>
         <NavBar pageIndex={numPages + 1} currentPage={currentPage} numPages={numPages + 2} handleFirstPage={handleFirstPage} handlePrevPage={handlePrevPage} handleNextPage={handleNextPage} handleLastPage={handleLastPage} />
-        {/* <button onClick={generateVideo}>Générer la vidéo</button> */}
+        <button onClick={generateVideo}>Générer la vidéo</button>
+        <video id="video-element" className="video-js" controls></video>
       </div>
     );
 

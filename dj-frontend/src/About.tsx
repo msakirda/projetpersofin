@@ -1,5 +1,4 @@
 import './App.css'
-import React from 'react';
 import MenuBar from './MenuBar';
 import './About.css'
 import SectionTitle from './SectionTitle';

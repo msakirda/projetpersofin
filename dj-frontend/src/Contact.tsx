@@ -1,7 +1,7 @@
 // Import des fichiers CSS et du module React et useState depuis React
 import './App.css'
 import './Contact.css'
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 // Import du composant MenuBar
 import MenuBar from './MenuBar';

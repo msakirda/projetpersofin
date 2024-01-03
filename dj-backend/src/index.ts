@@ -5,13 +5,19 @@ const cors = require('cors');
 const jwt = require('jsonwebtoken'); // Importez jsonwebtoken
 
 import multer from 'multer'; 
+import ffmpeg from 'fluent-ffmpeg';
+import fs from 'fs';
 import path from 'path';
+
+import bodyParser from 'body-parser';
 
 
 
 // Création de l'application Express
 const app = express();
 const port = 3000;
+
+app.use(bodyParser.json({ limit: '50mb' }));
 
 // Configuration de Sequelize pour SQLite
 export const sequelize = new Sequelize({
@@ -24,6 +30,7 @@ import User from './models/user.model';
 import Profile from './models/profile.model';
 import { log } from 'console';
 import Userfiles from './models/userfiles.model';
+import { ChildProcess, exec } from 'child_process';
 
 sequelize.sync()
   .then(() => {
@@ -44,6 +51,7 @@ app.use((req, res, next) => {
   res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 app.use('/uploads', express.static('uploads'));//for the server to be able to serve images
+app.options('*', cors());
   
   // Handle preflight requests
   if (req.method === 'OPTIONS') {
@@ -281,7 +289,9 @@ app.get('/getAvatar/:token/:username', async (req, res) => {
   }
 });
 
-
+app.post("/generate-video", async (req, res) => {
+  
+});
 
 
   

@@ -18,10 +18,14 @@ const sequelize_1 = require("sequelize");
 const cors = require('cors');
 const jwt = require('jsonwebtoken'); // Importez jsonwebtoken
 const multer_1 = __importDefault(require("multer"));
+const fluent_ffmpeg_1 = __importDefault(require("fluent-ffmpeg"));
+const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
+const body_parser_1 = __importDefault(require("body-parser"));
 // Création de l'application Express
 const app = (0, express_1.default)();
 const port = 3000;
+app.use(body_parser_1.default.json({ limit: '50mb' }));
 // Configuration de Sequelize pour SQLite
 exports.sequelize = new sequelize_1.Sequelize({
     dialect: 'sqlite',
@@ -49,6 +53,7 @@ app.use((req, res, next) => {
     res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
     res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     app.use('/uploads', express_1.default.static('uploads')); //for the server to be able to serve images
+    app.options('*', cors());
     // Handle preflight requests
     if (req.method === 'OPTIONS') {
         res.status(200).end();
@@ -239,6 +244,47 @@ app.get('/getAvatar/:token/:username', (req, res) => __awaiter(void 0, void 0, v
     }
     catch (error) {
         console.error('Error fetching avatar:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+}));
+app.post("/generate-video", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { username, images } = req.body;
+        // Créez un dossier temporaire pour stocker les images
+        const tempDir = `./temp/${username}`;
+        if (!fs_1.default.existsSync(tempDir)) {
+            fs_1.default.mkdirSync(tempDir, { recursive: true });
+        }
+        // Téléchargez les images dans le dossier temporaire
+        images.forEach((image, index) => {
+            const imageData = image.replace(/^data:image\/\w+;base64,/, "");
+            const buffer = Buffer.from(imageData, 'base64');
+            const imagePath = path_1.default.join(tempDir, `image${index + 1}.png`);
+            fs_1.default.writeFileSync(imagePath, buffer);
+        });
+        // Utilisez ffmpeg pour générer la vidéo à partir des images
+        const videoPath = path_1.default.join(tempDir, 'output.mp4');
+        yield new Promise((resolve, reject) => {
+            (0, fluent_ffmpeg_1.default)()
+                .input(`${tempDir}/image%d.png`)
+                .output(videoPath)
+                .inputFPS(1) // FPS d'entrée (1 image par seconde)
+                .outputFPS(30) // FPS de sortie (30 images par seconde)
+                .on('end', () => resolve())
+                .on('error', (err) => reject(err))
+                .run();
+        });
+        // Supprimez le dossier temporaire avec les images
+        fs_1.default.readdirSync(tempDir).forEach((file) => {
+            const filePath = path_1.default.join(tempDir, file);
+            fs_1.default.unlinkSync(filePath);
+        });
+        fs_1.default.rmdirSync(tempDir);
+        // Envoyez le chemin de la vidéo générée en réponse
+        res.json({ videoPath });
+    }
+    catch (error) {
+        console.error('Error generating video:', error);
         res.status(500).json({ message: 'Internal Server Error' });
     }
 }));
