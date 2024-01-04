@@ -19,13 +19,10 @@ const cors = require('cors');
 const jwt = require('jsonwebtoken'); // Importez jsonwebtoken
 const multer_1 = __importDefault(require("multer"));
 const fluent_ffmpeg_1 = __importDefault(require("fluent-ffmpeg"));
-const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
-const body_parser_1 = __importDefault(require("body-parser"));
 // Création de l'application Express
 const app = (0, express_1.default)();
 const port = 3000;
-app.use(body_parser_1.default.json({ limit: '50mb' }));
 // Configuration de Sequelize pour SQLite
 exports.sequelize = new sequelize_1.Sequelize({
     dialect: 'sqlite',
@@ -247,44 +244,42 @@ app.get('/getAvatar/:token/:username', (req, res) => __awaiter(void 0, void 0, v
         res.status(500).json({ message: 'Internal Server Error' });
     }
 }));
-app.post("/generate-video", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+// Route pour générer la vidéo
+app.post('/generate-video', upload.array('videoFiles'), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { username, images } = req.body;
-        // Créez un dossier temporaire pour stocker les images
-        const tempDir = `./temp/${username}`;
-        if (!fs_1.default.existsSync(tempDir)) {
-            fs_1.default.mkdirSync(tempDir, { recursive: true });
-        }
-        // Téléchargez les images dans le dossier temporaire
-        images.forEach((image, index) => {
-            const imageData = image.replace(/^data:image\/\w+;base64,/, "");
-            const buffer = Buffer.from(imageData, 'base64');
-            const imagePath = path_1.default.join(tempDir, `image${index + 1}.png`);
-            fs_1.default.writeFileSync(imagePath, buffer);
-        });
-        // Utilisez ffmpeg pour générer la vidéo à partir des images
-        const videoPath = path_1.default.join(tempDir, 'output.mp4');
-        yield new Promise((resolve, reject) => {
-            (0, fluent_ffmpeg_1.default)()
-                .input(`${tempDir}/image%d.png`)
-                .output(videoPath)
-                .inputFPS(1) // FPS d'entrée (1 image par seconde)
-                .outputFPS(30) // FPS de sortie (30 images par seconde)
-                .on('end', () => resolve())
-                .on('error', (err) => reject(err))
-                .run();
-        });
-        // Supprimez le dossier temporaire avec les images
-        fs_1.default.readdirSync(tempDir).forEach((file) => {
-            const filePath = path_1.default.join(tempDir, file);
-            fs_1.default.unlinkSync(filePath);
-        });
-        fs_1.default.rmdirSync(tempDir);
-        // Envoyez le chemin de la vidéo générée en réponse
-        res.json({ videoPath });
+        const files = req.files;
+        // const inputFiles = files.map(file => path.join( `uploads/${file.filename}`));
+        const inputFiles = files.map(file => path_1.default.join(`uploads/${file.filename}`));
+        console.log('Chemin des fichiers:', inputFiles);
+        const outputVideo = path_1.default.join('uploads', 'output.mp4');
+        const durationPerImage = 3; // Durée de chaque image en secondes
+        const imagesPerSecond = 60; // Fréquence d'images par seconde
+        const targetResolution = '1280x720'; // Résolution souhaitée
+        (0, fluent_ffmpeg_1.default)()
+            .input(`concat:${inputFiles.join('|')}`)
+            // .inputFormat(['jpg', 'jpeg', 'png'])
+            // .inputFPS(imagesPerSecond)
+            .output(outputVideo)
+            .noAudio()
+            .duration(3)
+            .inputFPS(1)
+            .fps(1)
+            .videoCodec('libx264')
+            // .audioCodec('aac')
+            // .videoBitrate('5000k') // Ajoutez la valeur de débit binaire souhaitée
+            // .fps(imagesPerSecond) // Ajuste la fréquence d'images de sortie
+            .size(targetResolution) // Spécifie la résolution de la vidéo
+            // .duration(imagesPerSecond * durationPerImage * inputFiles.length) // Durée totale de la vidéo
+            .run();
+        console.log('Ici le serveur , Vidéo générée avec succès:', outputVideo);
+        // Renvoie la vidéo au client
+        // Exemple d'URL de vidéo générée
+        const videoFileName = outputVideo;
+        const videoURL = `${req.protocol}://${req.get('host')}/${videoFileName}`;
+        res.json({ message: 'Vidéo générée avec succès', url: videoURL });
     }
     catch (error) {
-        console.error('Error generating video:', error);
+        console.error('Erreur lors de la gestion des fichiers:', error);
         res.status(500).json({ message: 'Internal Server Error' });
     }
 }));

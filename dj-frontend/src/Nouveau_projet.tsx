@@ -12,6 +12,7 @@ const Nouveau_projet = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const scrollerRef = useRef<HTMLDivElement>(null);
   const [middlePagesImages, setMiddlePagesImages] = useState<Array<File>>([]); // Nouvel état pour stocker les fichiers d'image
+  const [resultVideoUrl , setResultVideoUrl] = useState<string>("");
   
 
 
@@ -74,7 +75,32 @@ const Nouveau_projet = () => {
   }, [currentPage]);
 
   const generateVideo = async () => {
-    
+    try {
+      const formData = new FormData();
+  
+      // Ajoutez chaque fichier au formulaire de données
+      middlePagesImages.forEach((file, index) => {
+        formData.append("videoFiles" ,file);
+      });
+  
+      const response = await fetch('http://localhost:3000/generate-video', {
+        method: 'POST',
+        body: formData,
+      });
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+  
+      const result = await response.json();
+      setResultVideoUrl(result.url);
+      console.log('Files uploaded successfully:', result);
+      console.log('Here is the url of the created video:', result.url);
+  
+      // Continue with other actions if needed
+    } catch (error) {
+      console.error('Error uploading files to the server:', error);
+    }
   };
   
 
@@ -86,12 +112,14 @@ const Nouveau_projet = () => {
 
     // Première page
     pages.push(
-      <div key="firstPage" className={`slider-page firstPage`}>
+      <div key="firstPage" id="firstPage" className={`slider-page firstPage`}>
         <NavBar pageIndex={0} currentPage={currentPage} numPages={numPages + 2} handleFirstPage={handleFirstPage} handlePrevPage={handlePrevPage} handleNextPage={handleNextPage} handleLastPage={handleLastPage} />
-        <label>
-          Number of Pages:
-          <input type='number' value={numPages} onChange={handleNumPagesChange} min={1} max={99} />
-        </label>
+        <div id="settingsPart">
+          <label id='numberOfPagesInput'>
+            Number of Pages:
+            <input type='number' value={numPages} onChange={handleNumPagesChange} min={1} max={99} />
+          </label>
+        </div>
       </div>
     );
 
@@ -107,8 +135,12 @@ const Nouveau_projet = () => {
     pages.push(
       <div key="lastPage" className={`slider-page lastPage`}>
         <NavBar pageIndex={numPages + 1} currentPage={currentPage} numPages={numPages + 2} handleFirstPage={handleFirstPage} handlePrevPage={handlePrevPage} handleNextPage={handleNextPage} handleLastPage={handleLastPage} />
-        <button onClick={generateVideo}>Générer la vidéo</button>
-        <video id="video-element" className="video-js" controls></video>
+        <div id='generateVideoPart'>
+          <button onClick={generateVideo}>Générer la vidéo</button>
+          <video controls src={resultVideoUrl} style={{ width: '50%', height: 'auto' , display: resultVideoUrl ? 'block' : 'none'}}> </video>
+        </div>
+        
+
       </div>
     );
 
