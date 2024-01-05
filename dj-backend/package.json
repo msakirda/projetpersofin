@@ -10,7 +10,7 @@
     "jsonwebtoken": "^9.0.2",
     "mysql2": "^3.6.5",
     "sequelize": "^6.35.1",
-    "sqlite3": "^5.1.6",
+    "sqlite3": "^5.1.7",
     "typescript": "^5.3.3",
     "whammy": "^0.0.1"
   },
