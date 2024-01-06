@@ -90,7 +90,7 @@ const Nouveau_projet = () => {
 
   const generateVideo = async () => {
     try {
-      if(middlePagesImages.length < numPages)
+      if(middlePagesImages.length < numPages || !audioProvided)
       {
         alert("Les pages ne sont pas toutes remplies");
         return;
@@ -109,7 +109,7 @@ const Nouveau_projet = () => {
       // Ajoutez le fichier audio au formulaire de données
       console.log(audioProvided);
       
-      //formData.append("audioFile", audioProvided!);
+      formData.append("videoFiles", audioProvided!);
       
 
       const response = await fetch('http://localhost:3000/generate-video', {
