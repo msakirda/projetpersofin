@@ -9,6 +9,7 @@ import ffmpeg from 'fluent-ffmpeg';
 import fs from 'fs';
 import path from 'path';
 
+import { v4 as uuidv4 } from 'uuid';
 
 
 // Création de l'application Express
@@ -285,9 +286,16 @@ app.get('/getAvatar/:token/:username', async (req, res) => {
   }
 });
 
+function generateUniqueFileName(): string {
+  const randomString = uuidv4().replace(/-/g, ''); // Utilise la bibliothèque uuid pour générer un identifiant unique
+  const uniqueFileName = `video${randomString}.mp4`; // Nom de fichier avec l'extension .mp4
+  return uniqueFileName;
+}
+
 // Route pour générer la vidéo
 app.post('/generate-video', upload.array('videoFiles'), async (req, res) => {
   try {
+
     const files = req.files as Express.Multer.File[];
 
     // const inputFiles = files.map(file => path.join( `uploads/${file.filename}`));
@@ -295,9 +303,11 @@ app.post('/generate-video', upload.array('videoFiles'), async (req, res) => {
     console.log('Chemin des fichiers:', inputFiles);
 
 
-    const outputVideo = path.join( 'uploads', 'output.mp4');
+    const outputVideo = path.join( 'uploads', generateUniqueFileName());
 
-    const durationPerImage = 3; // Durée de chaque image en secondes
+    const durationPerImage = req.body.eachPageDuration; // Durée de chaque image en secondes
+    console.log("duration per image coming from client: " , durationPerImage );
+    
     const imagesPerSecond = 60; // Fréquence d'images par seconde
     const targetResolution = '1920x1080'; // Résolution souhaitée
 
@@ -307,9 +317,9 @@ app.post('/generate-video', upload.array('videoFiles'), async (req, res) => {
       // .inputFPS(imagesPerSecond)
       .output(outputVideo)
       .noAudio()
-      .duration(3)
-      .inputFPS(1)
-      .fps(1)
+      .duration(inputFiles.length * durationPerImage)
+      .inputFPS(1/durationPerImage)
+      // .fps(1)
       .videoCodec('libx264')
       // .audioCodec('aac')
       // .videoBitrate('5000k') // Ajoutez la valeur de débit binaire souhaitée
@@ -320,14 +330,17 @@ app.post('/generate-video', upload.array('videoFiles'), async (req, res) => {
 
 
     
-      console.log('Ici le serveur , Vidéo générée avec succès:', outputVideo);
+      console.log('Ici le servesur , Vidéo générée avec succès:', outputVideo);
       // Renvoie la vidéo au client
         // Exemple d'URL de vidéo générée
       const videoFileName = outputVideo;
 
-      const videoURL = `${req.protocol}://${req.get('host')}/${videoFileName}`;
-      
-      res.json({ message: 'Vidéo générée avec succès', url: videoURL });
+      setTimeout(()=>{
+        const videoURL = `${req.protocol}://${req.get('host')}/${videoFileName}`;
+        res.json({ message: 'Vidéo générée avec succès', url: videoURL });
+
+      } , 1000)
+
 
     } catch (error) {
       console.error('Erreur lors de la gestion des fichiers:', error);

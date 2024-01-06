@@ -3,23 +3,35 @@ import './Nouveau_projet.css';
 import MenuBar from './MenuBar';
 import MiddlePage from './MiddlePage';
 import NavBar from './NavBar';
+import ReactPlayer from 'react-player';
 
 
 
+interface ImageObject {
+  pageNumber: number;
+  file: File;
+}
 
 const Nouveau_projet = () => {
   const [numPages, setNumPages] = useState(3);
+  const [eachPageDuration , setEachPageDuration] = useState(1);
   const [currentPage, setCurrentPage] = useState(0);
   const scrollerRef = useRef<HTMLDivElement>(null);
-  const [middlePagesImages, setMiddlePagesImages] = useState<Array<File>>([]); // Nouvel état pour stocker les fichiers d'image
+  const [middlePagesImages, setMiddlePagesImages] = useState<Array<ImageObject>>([]); // Nouvel état pour stocker les fichiers d'image
   const [resultVideoUrl , setResultVideoUrl] = useState<string>("");
   
+  useEffect(()=>{
+      setMiddlePagesImages([]);
+  },[])
 
-
-  const updateMiddlePagesImages = (newImages: File[]) => {
-    setMiddlePagesImages(newImages);
-    console.log(newImages);
-    
+  const updateMiddlePagesImages = (newImages: ImageObject[]) => {
+    // Créez une copie du tableau avant de le trier
+    const sortedImages = [...newImages];
+    sortedImages.sort((a, b) => a.pageNumber - b.pageNumber);
+  
+    // Mettez à jour l'état avec le tableau trié
+    setMiddlePagesImages(sortedImages);
+    console.log(sortedImages);
   };
 
   const handleNumPagesChange = useCallback((e: { target: { value: string; }; }) => {
@@ -74,15 +86,25 @@ const Nouveau_projet = () => {
     };
   }, [currentPage]);
 
+
   const generateVideo = async () => {
     try {
+      if(middlePagesImages.length < numPages)
+      {
+        alert("Les pages ne sont pas toutes remplies");
+        return;
+      }
+       setResultVideoUrl("");
+
       const formData = new FormData();
-  
+
       // Ajoutez chaque fichier au formulaire de données
       middlePagesImages.forEach((file, index) => {
-        formData.append("videoFiles" ,file);
+        formData.append("videoFiles" ,file.file);
       });
   
+      formData.append("eachPageDuration", String(eachPageDuration));
+
       const response = await fetch('http://localhost:3000/generate-video', {
         method: 'POST',
         body: formData,
@@ -103,8 +125,9 @@ const Nouveau_projet = () => {
     }
   };
   
-
-
+  const downloadVideo = ()=>{
+    
+  }
   
   
   const renderPages = () => {
@@ -118,6 +141,10 @@ const Nouveau_projet = () => {
           <label id='numberOfPagesInput'>
             Number of Pages:
             <input type='number' value={numPages} onChange={handleNumPagesChange} min={1} max={99} />
+          </label>
+          <label id='pagesDuration'>
+            Duration of each pages in seconds:
+            <input type='number' value={eachPageDuration} onChange={(e)=>setEachPageDuration(parseInt(e.target.value))} min={1} max={99} />
           </label>
         </div>
       </div>
@@ -137,7 +164,10 @@ const Nouveau_projet = () => {
         <NavBar pageIndex={numPages + 1} currentPage={currentPage} numPages={numPages + 2} handleFirstPage={handleFirstPage} handlePrevPage={handlePrevPage} handleNextPage={handleNextPage} handleLastPage={handleLastPage} />
         <div id='generateVideoPart'>
           <button onClick={generateVideo}>Générer la vidéo</button>
-          <video controls src={resultVideoUrl} style={{ width: '50%', height: 'auto' , display: resultVideoUrl ? 'block' : 'none'}}> </video>
+          <div>
+            <ReactPlayer url={resultVideoUrl} controls />
+          </div>
+          <button onClick={downloadVideo}>Télécharger la vidéo</button>
         </div>
         
 
