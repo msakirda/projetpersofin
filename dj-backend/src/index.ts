@@ -288,69 +288,44 @@ app.get('/getAvatar/:token/:username', async (req, res) => {
 
 function generateUniqueFileName(): string {
   const randomString = uuidv4().replace(/-/g, ''); // Utilise la bibliothèque uuid pour générer un identifiant unique
-  const uniqueFileName = `video${randomString}.mp4`; // Nom de fichier avec l'extension .mp4
+  const uniqueFileName = `video_${randomString}.mp4`; // Nom de fichier avec l'extension .mp4
   return uniqueFileName;
 }
 
-// Route pour générer la vidéo
-app.post('/generate-video', upload.array('videoFiles'), async (req, res) => {
+app.post('/generate-video', upload.array('videoFiles')  ,async (req, res) => {
   try {
-
     const files = req.files as Express.Multer.File[];
+    const imagesAmount = files.length
+    const inputFiles = files.map(file => path.join(`uploads/${file.filename}`));
+    console.log('Chemin des fichiers:', inputFiles, " nombre de fichiers= ", imagesAmount);
+    const outputVideo = path.join('uploads', generateUniqueFileName());
+    const durationPerImage = req.body.eachPageDuration;
+    console.log("duration per image coming from client: ", durationPerImage);
+    const targetResolution = '1920x1080';
 
-    // const inputFiles = files.map(file => path.join( `uploads/${file.filename}`));
-    const inputFiles = files.map(file => path.join( `uploads/${file.filename}`));
-    console.log('Chemin des fichiers:', inputFiles);
+    await new Promise<void>((resolve, reject) => {
+      ffmpeg()
+        .input(`concat:${inputFiles.join('|')}`)
+        .output(outputVideo)
+        .noAudio()
+        .duration(durationPerImage * imagesAmount)
+        .videoCodec('libx264')
+        .inputFps(1.0 / durationPerImage)
+        .size(targetResolution)
+        .on('end', () => resolve())
+        .on('error', (err) => reject(err))
+        .run();
+    });
 
+    console.log('Ici le serveur, Vidéo générée avec succès:', outputVideo);
 
-    const outputVideo = path.join( 'uploads', generateUniqueFileName());
+    // Renvoie la vidéo au client
+    const videoFileName = outputVideo;
+    const videoURL = `${req.protocol}://${req.get('host')}/${videoFileName}`;
+    res.json({ message: 'Vidéo générée avec succès', url: videoURL });
 
-    const durationPerImage = req.body.eachPageDuration; // Durée de chaque image en secondes
-    console.log("duration per image coming from client: " , durationPerImage );
-    
-    const imagesPerSecond = 60; // Fréquence d'images par seconde
-    const targetResolution = '1920x1080'; // Résolution souhaitée
-
-    ffmpeg()
-      .input(`concat:${inputFiles.join('|')}`)
-      // .inputFormat(['jpg', 'jpeg', 'png'])
-      // .inputFPS(imagesPerSecond)
-      .output(outputVideo)
-      .noAudio()
-      .duration(inputFiles.length * durationPerImage)
-      .inputFPS(1/durationPerImage)
-      // .fps(1)
-      .videoCodec('libx264')
-      // .audioCodec('aac')
-      // .videoBitrate('5000k') // Ajoutez la valeur de débit binaire souhaitée
-      // .fps(imagesPerSecond) // Ajuste la fréquence d'images de sortie
-      .size(targetResolution) // Spécifie la résolution de la vidéo
-      // .duration(imagesPerSecond * durationPerImage * inputFiles.length) // Durée totale de la vidéo
-      .run();
-
-
-    
-      console.log('Ici le servesur , Vidéo générée avec succès:', outputVideo);
-      // Renvoie la vidéo au client
-        // Exemple d'URL de vidéo générée
-      const videoFileName = outputVideo;
-
-      setTimeout(()=>{
-        const videoURL = `${req.protocol}://${req.get('host')}/${videoFileName}`;
-        res.json({ message: 'Vidéo générée avec succès', url: videoURL });
-
-      } , 1000)
-
-
-    } catch (error) {
-      console.error('Erreur lors de la gestion des fichiers:', error);
-      res.status(500).json({ message: 'Internal Server Error' });
-    }
+  } catch (error) {
+    console.error('Erreur lors de la gestion des fichiers:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
 });
-
-
-
-  
-
-
-
