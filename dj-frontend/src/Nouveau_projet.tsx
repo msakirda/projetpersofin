@@ -181,7 +181,7 @@ const Nouveau_projet = () => {
           {/* Utilisation de DownloadLink */}
           <DownloadLink style={{backgroundColor: "grey" , display: resultVideoUrl? "block" : "none"}}
             label="Télécharger la vidéo"
-            filename="nom-de-la-video.mp4"  // Remplacez 'nom-de-la-video' par le nom souhaité
+            filename="Speedalbum-product.avi"  // Remplacez 'nom-de-la-video' par le nom souhaité
             exportFile={() => resultVideoUrl}
           />
       </div>

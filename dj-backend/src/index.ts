@@ -294,8 +294,9 @@ function generateUniqueFileName(): string {
 
 app.post('/generate-video', upload.array('videoFiles')  ,async (req, res) => {
   try {
-    const files = req.files as Express.Multer.File[];
+    let files = req.files as Express.Multer.File[];
     const audioFile = files[files.length - 1];
+    files = files.slice(0 , files.length-1)
     const imagesAmount = files.length
     const inputFiles = files.map(file => path.join(`uploads/${file.filename}`));
     console.log('Chemin des fichiers:', inputFiles, " nombre de fichiers= ", imagesAmount);
@@ -307,12 +308,14 @@ app.post('/generate-video', upload.array('videoFiles')  ,async (req, res) => {
     await new Promise<void>((resolve, reject) => {
       ffmpeg()
         .input(`concat:${inputFiles.join('|')}`)
+        .inputFPS(1.0 / durationPerImage)
         .input(`uploads/${audioFile.filename}`)
         .output(outputVideo)
         .audioCodec('aac')
         .duration(durationPerImage * imagesAmount)
         .videoCodec('libx264')
-        .inputFps(1.0 / durationPerImage)
+        // .inputFps(1.0 / durationPerImage)
+        // .fps(1.0 / durationPerImage)
         .size(targetResolution)
         .on('end', () => resolve())
         .on('error', (err) => reject(err))
