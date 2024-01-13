@@ -25,9 +25,8 @@ export const sequelize = new Sequelize({
 
 import User from './models/user.model';
 import Profile from './models/profile.model';
-import { log } from 'console';
 import Userfiles from './models/userfiles.model';
-import { ChildProcess, exec } from 'child_process';
+import Project from './models/project.model'
 
 sequelize.sync()
   .then(() => {
@@ -337,8 +336,9 @@ app.post('/generate-video', upload.array('videoFiles')  ,async (req, res) => {
   }
 });
 
-app.post('/generate-video-authenticated', authenticateToken ,upload.array('videoFiles')  ,async (req, res) => {
+app.post('/generate-video-authenticated', authenticateToken , upload.array('videoFiles')  , async (req, res) => {
   try {
+
     let files = req.files as Express.Multer.File[];
     const audioFile = files[files.length - 1];
     files = files.slice(0 , files.length-1)
@@ -359,8 +359,6 @@ app.post('/generate-video-authenticated', authenticateToken ,upload.array('video
         .audioCodec('aac')
         .duration(durationPerImage * imagesAmount)
         .videoCodec('libx264')
-        // .inputFps(1.0 / durationPerImage)
-        // .fps(1.0 / durationPerImage)
         .size(targetResolution)
         .on('end', () => resolve())
         .on('error', (err) => reject(err))
@@ -368,12 +366,26 @@ app.post('/generate-video-authenticated', authenticateToken ,upload.array('video
     });
 
     console.log('Ici le serveur, Vidéo générée avec succès:', outputVideo);
+  
+    const token = req.headers.authorization!.split(' ')[1];
+    const decodedToken =  jwt.verify(token, 'mubla_deeps');
+    const username = decodedToken.username;
 
+    console.log("username decoded: " , username );
     
 
+    // Save each image URL in the database
+    for (const inputFile of inputFiles) {
+      await Project.create({
+        username: username,
+        imageURL: inputFile,
+        musicUrl: audioFile.filename,
+        projectName : req.body.projectName
+      });
+    }
+
     // Renvoie la vidéo au client
-    const videoFileName = outputVideo;
-    const videoURL = `${req.protocol}://${req.get('host')}/${videoFileName}`;
+    const videoURL = `${req.protocol}://${req.get('host')}/${outputVideo}`;
     res.json({ message: 'Vidéo générée avec succès', url: videoURL });
 
   } catch (error) {

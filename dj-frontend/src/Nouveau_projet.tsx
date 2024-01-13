@@ -20,6 +20,7 @@ const Nouveau_projet = () => {
   const [middlePagesImages, setMiddlePagesImages] = useState<Array<ImageObject>>([]); // Nouvel état pour stocker les fichiers d'image
   const [resultVideoUrl , setResultVideoUrl] = useState<string>("");
   const [audioProvided , setAudioProvided] = useState<File|null>(null);
+  const [pname , setPName] = useState<string>("");
   
   useEffect(()=>{
       setMiddlePagesImages([]);
@@ -129,11 +130,13 @@ const Nouveau_projet = () => {
       }
       else
       {
+        formData.append("projectName" , pname);
 
-        const response = await fetch('http://localhost:3000/generate-video-authenticated', {
+        const response = await fetch(`http://localhost:3000/generate-video-authenticated`, {
           method: 'POST',
           body: formData,
           headers: {
+            //'Content-Type': 'multipart/form-data',
             // Add Authorization header with the token
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -167,6 +170,10 @@ const Nouveau_projet = () => {
       <div key="firstPage" id="firstPage" className={`slider-page firstPage`}>
         <NavBar pageIndex={0} currentPage={currentPage} numPages={numPages + 2} handleFirstPage={handleFirstPage} handlePrevPage={handlePrevPage} handleNextPage={handleNextPage} handleLastPage={handleLastPage} />
         <div id="settingsPart">
+          <label id='projectNameInput' style={{display : localStorage.getItem("userConnectedUsername") === "#UserIncognito" ? "none" : "block"}}>
+            Project Name:
+            <input type='text' value={pname} onChange={(e)=>setPName(e.target.value)}  />
+          </label>
           <label id='numberOfPagesInput'>
             Number of Pages:
             <input type='number' value={numPages} onChange={handleNumPagesChange} min={1} max={99} />

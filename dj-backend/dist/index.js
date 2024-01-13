@@ -33,6 +33,7 @@ exports.sequelize = new sequelize_1.Sequelize({
 const user_model_1 = __importDefault(require("./models/user.model"));
 const profile_model_1 = __importDefault(require("./models/profile.model"));
 const userfiles_model_1 = __importDefault(require("./models/userfiles.model"));
+const project_model_1 = __importDefault(require("./models/project.model"));
 exports.sequelize.sync()
     .then(() => {
     // Démarrage du serveur Express après la synchronisation
@@ -61,7 +62,7 @@ app.use((req, res, next) => {
 });
 const secretKey = 'mubla_deeps';
 const authenticateToken = (req, res, next) => {
-    let token = req.body.token || req.params.token || (req.headers.authorization && req.headers.authorization.split(' ')[1]) || req.body.formData.token;
+    let token = req.body.token || req.params.token || (req.headers.authorization && req.headers.authorization.split(' ')[1]);
     console.log("token ", token, " va être vérifié.");
     if (!token) {
         return res.status(401).json({ message: 'Token missing' });
@@ -310,17 +311,27 @@ app.post('/generate-video-authenticated', authenticateToken, upload.array('video
                 .audioCodec('aac')
                 .duration(durationPerImage * imagesAmount)
                 .videoCodec('libx264')
-                // .inputFps(1.0 / durationPerImage)
-                // .fps(1.0 / durationPerImage)
                 .size(targetResolution)
                 .on('end', () => resolve())
                 .on('error', (err) => reject(err))
                 .run();
         });
         console.log('Ici le serveur, Vidéo générée avec succès:', outputVideo);
+        const token = req.headers.authorization.split(' ')[1];
+        const decodedToken = jwt.verify(token, 'mubla_deeps');
+        const username = decodedToken.username;
+        console.log("username decoded: ", username);
+        // Save each image URL in the database
+        for (const inputFile of inputFiles) {
+            yield project_model_1.default.create({
+                username: username,
+                imageURL: inputFile,
+                musicUrl: audioFile.filename,
+                projectName: req.body.projectName
+            });
+        }
         // Renvoie la vidéo au client
-        const videoFileName = outputVideo;
-        const videoURL = `${req.protocol}://${req.get('host')}/${videoFileName}`;
+        const videoURL = `${req.protocol}://${req.get('host')}/${outputVideo}`;
         res.json({ message: 'Vidéo générée avec succès', url: videoURL });
     }
     catch (error) {
