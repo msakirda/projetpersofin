@@ -111,20 +111,43 @@ const Nouveau_projet = () => {
       
       formData.append("videoFiles", audioProvided!);
       
-
-      const response = await fetch('http://localhost:3000/generate-video', {
-        method: 'POST',
-        body: formData,
-      });
-  
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+      if(localStorage.getItem("userConnectedUsername") === "#UserIncognito")
+      {
+        const response = await fetch('http://localhost:3000/generate-video', {
+          method: 'POST',
+          body: formData,
+        });
+    
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+    
+        const result = await response.json();
+        setResultVideoUrl(result.url);
+        console.log('Files uploaded successfully:', result);
+        console.log('Here is the url of the created video:', result.url);
       }
-  
-      const result = await response.json();
-      setResultVideoUrl(result.url);
-      console.log('Files uploaded successfully:', result);
-      console.log('Here is the url of the created video:', result.url);
+      else
+      {
+
+        const response = await fetch('http://localhost:3000/generate-video-authenticated', {
+          method: 'POST',
+          body: formData,
+          headers: {
+            // Add Authorization header with the token
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+    
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+    
+        const result = await response.json();
+        setResultVideoUrl(result.url);
+        console.log('Files uploaded successfully:', result);
+        console.log('Here is the url of the created video:', result.url);
+      }
   
       // Continue with other actions if needed
     } catch (error) {
@@ -184,9 +207,7 @@ const Nouveau_projet = () => {
             filename="Speedalbum-product.avi"  // Remplacez 'nom-de-la-video' par le nom souhaité
             exportFile={() => resultVideoUrl}
           />
-      </div>
-        
-
+        </div>
       </div>
     );
 

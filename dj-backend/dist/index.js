@@ -61,7 +61,7 @@ app.use((req, res, next) => {
 });
 const secretKey = 'mubla_deeps';
 const authenticateToken = (req, res, next) => {
-    let token = req.body.token || req.params.token || (req.headers.authorization && req.headers.authorization.split(' ')[1]);
+    let token = req.body.token || req.params.token || (req.headers.authorization && req.headers.authorization.split(' ')[1]) || req.body.formData.token;
     console.log("token ", token, " va être vérifié.");
     if (!token) {
         return res.status(401).json({ message: 'Token missing' });
@@ -251,6 +251,45 @@ function generateUniqueFileName() {
     return uniqueFileName;
 }
 app.post('/generate-video', upload.array('videoFiles'), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let files = req.files;
+        const audioFile = files[files.length - 1];
+        files = files.slice(0, files.length - 1);
+        const imagesAmount = files.length;
+        const inputFiles = files.map(file => path_1.default.join(`uploads/${file.filename}`));
+        console.log('Chemin des fichiers:', inputFiles, " nombre de fichiers= ", imagesAmount);
+        const outputVideo = path_1.default.join('uploads', generateUniqueFileName());
+        const durationPerImage = req.body.eachPageDuration;
+        console.log("duration per image coming from client: ", durationPerImage);
+        const targetResolution = '1920x1080';
+        yield new Promise((resolve, reject) => {
+            (0, fluent_ffmpeg_1.default)()
+                .input(`concat:${inputFiles.join('|')}`)
+                .inputFPS(1.0 / durationPerImage)
+                .input(`uploads/${audioFile.filename}`)
+                .output(outputVideo)
+                .audioCodec('aac')
+                .duration(durationPerImage * imagesAmount)
+                .videoCodec('libx264')
+                // .inputFps(1.0 / durationPerImage)
+                // .fps(1.0 / durationPerImage)
+                .size(targetResolution)
+                .on('end', () => resolve())
+                .on('error', (err) => reject(err))
+                .run();
+        });
+        console.log('Ici le serveur, Vidéo générée avec succès:', outputVideo);
+        // Renvoie la vidéo au client
+        const videoFileName = outputVideo;
+        const videoURL = `${req.protocol}://${req.get('host')}/${videoFileName}`;
+        res.json({ message: 'Vidéo générée avec succès', url: videoURL });
+    }
+    catch (error) {
+        console.error('Erreur lors de la gestion des fichiers:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+}));
+app.post('/generate-video-authenticated', authenticateToken, upload.array('videoFiles'), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         let files = req.files;
         const audioFile = files[files.length - 1];
