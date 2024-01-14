@@ -7,6 +7,8 @@ class Project extends Model {
   public imageURL!: string; // Updated to store multiple image URLs
   public musicUrl! : string;
   public projectName! : string;
+  public eachPageDuration! : number;
+  public pagesNumber! : number;
 }
 
 Project.init(
@@ -29,6 +31,16 @@ Project.init(
         type: DataTypes.STRING,
         primaryKey: false,
         allowNull: false,
+    },
+    eachPageDuration: {
+      type: DataTypes.NUMBER,
+      primaryKey: false,
+      allowNull: false,
+    },
+    pagesNumber: {
+      type: DataTypes.NUMBER,
+      primaryKey: false,
+      allowNull: false,
     },
   },
   {

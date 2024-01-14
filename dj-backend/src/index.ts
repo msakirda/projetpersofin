@@ -380,7 +380,9 @@ app.post('/generate-video-authenticated', authenticateToken , upload.array('vide
         username: username,
         imageURL: inputFile,
         musicUrl: audioFile.filename,
-        projectName : req.body.projectName
+        projectName : req.body.projectName,
+        eachPageDuration : durationPerImage,
+        pagesNumber : imagesAmount,
       });
     }
 
@@ -393,3 +395,42 @@ app.post('/generate-video-authenticated', authenticateToken , upload.array('vide
     res.status(500).json({ message: 'Internal Server Error' });
   }
 });
+
+app.get('/api/getProjectsPreview/:username', authenticateToken, async (req: Request, res: Response) => {
+  try {
+    const username = req.params.username;
+
+    const projects = await Project.findAll({
+      attributes: ['projectName', 'imageURL', 'username', 'musicUrl' , 'eachPageDuration' , 'pagesNumber'],
+      where: { username: username },
+      group: ['projectName'], // Add this line to group by projectName
+    });
+
+    if (!projects || projects.length === 0) {
+      return res.status(404).json({ message: 'No projects found for the given username' });
+    }
+
+    const baseUrl = `http://localhost:${port}/`;
+
+    const projectData = projects.map((project) => ({
+      projectName: project.projectName,
+      imageURL: baseUrl + project.imageURL,
+      username: project.username,
+      musicUrl: project.musicUrl,
+      eachPageDuration: project.eachPageDuration,
+      pagesNumber: project.pagesNumber,
+    }));
+
+    console.log("voici les projets trouvés: " , projectData);
+    console.log("image url: " , projectData[0].imageURL);
+    
+    
+    res.json(projectData);
+
+  } catch (error) {
+    console.error('Error fetching projects:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
+
+

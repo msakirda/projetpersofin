@@ -170,6 +170,10 @@ const Nouveau_projet = () => {
       <div key="firstPage" id="firstPage" className={`slider-page firstPage`}>
         <NavBar pageIndex={0} currentPage={currentPage} numPages={numPages + 2} handleFirstPage={handleFirstPage} handlePrevPage={handlePrevPage} handleNextPage={handleNextPage} handleLastPage={handleLastPage} />
         <div id="settingsPart">
+          {localStorage.getItem("userConnectedUsername") === "#UserIncognito" ? 
+            <p>Create an account or sign in for the project to be saved.</p> :
+            <></>
+          }
           <label id='projectNameInput' style={{display : localStorage.getItem("userConnectedUsername") === "#UserIncognito" ? "none" : "block"}}>
             Project Name:
             <input type='text' value={pname} onChange={(e)=>setPName(e.target.value)}  />

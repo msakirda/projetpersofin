@@ -1,0 +1,22 @@
+.menuRight{
+    width: 75%;
+    height: 100%;
+    color: white;
+
+    display: flex;
+    flex-direction: column;
+
+    background-color: blue;
+}
+
+.projectsContainer{
+    width: 95%;
+    height: 95%;
+
+    display: flex;
+    flex-direction: row;
+}
+
+.menuRight h1{
+    margin: 10px;
+}

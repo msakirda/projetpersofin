@@ -25,6 +25,16 @@ Project.init({
         primaryKey: false,
         allowNull: false,
     },
+    eachPageDuration: {
+        type: sequelize_1.DataTypes.NUMBER,
+        primaryKey: false,
+        allowNull: false,
+    },
+    pagesNumber: {
+        type: sequelize_1.DataTypes.NUMBER,
+        primaryKey: false,
+        allowNull: false,
+    },
 }, {
     sequelize: index_1.sequelize,
     modelName: 'Project',
