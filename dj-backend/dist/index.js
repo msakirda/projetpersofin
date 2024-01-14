@@ -370,3 +370,33 @@ app.get('/api/getProjectsPreview/:username', authenticateToken, (req, res) => __
         res.status(500).json({ message: 'Internal Server Error' });
     }
 }));
+user_model_1.default;
+app.get('/api/getProjectByProjectName/:projectName', authenticateToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const projectName = req.params.projectName;
+        const projects = yield project_model_1.default.findAll({
+            attributes: ['projectName', 'imageURL', 'username', 'musicUrl', 'eachPageDuration', 'pagesNumber'],
+            where: { projectName: projectName },
+            group: ['projectName'], // Add this line to group by projectName
+        });
+        if (!projects || projects.length === 0) {
+            return res.status(404).json({ message: 'No projects found for the given username' });
+        }
+        const baseUrl = `http://localhost:${port}/`;
+        const projectData = projects.map((project) => ({
+            projectName: project.projectName,
+            imageURL: baseUrl + project.imageURL,
+            username: project.username,
+            musicUrl: project.musicUrl,
+            eachPageDuration: project.eachPageDuration,
+            pagesNumber: project.pagesNumber,
+        }));
+        console.log("voici les projets trouvés: ", projectData);
+        console.log("image url: ", projectData[0].imageURL);
+        res.json(projectData);
+    }
+    catch (error) {
+        console.error('Error fetching projects:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+}));

@@ -26,6 +26,46 @@ const Nouveau_projet = () => {
       setMiddlePagesImages([]);
   },[])
 
+  useEffect(() => {
+    const projectName = localStorage.getItem("projectToLoad");
+    const token = localStorage.getItem("token");
+    if(projectName !== "" && token)
+    {
+      const fetchProjectData = async () => {
+      try {
+        const response = await fetch(`http://localhost:${3000}/api/getProjectByProjectName/${projectName}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            // You may need to include your authentication token if required by the server
+            'Authorization': `Bearer ${token}`
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(`Error fetching projects: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        
+        
+        setPName(data[0].projectName)
+        setNumPages(data[0].pagesNumber)
+        setEachPageDuration(data[0].eachPageDuration)
+        setAudioProvided(data[0].audioProvided);
+
+
+      } catch (error) {
+        console.error('Error fetching projects:', error);
+        // Handle error, perhaps set an error state or display an error message
+      }
+    };
+
+    // Fetch data when component mounts or when projectName changes
+    fetchProjectData();
+
+  }}, []);
+
   const updateMiddlePagesImages = (newImages: ImageObject[]) => {
     // Créez une copie du tableau avant de le trier
     const sortedImages = [...newImages];
