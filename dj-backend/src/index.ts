@@ -457,7 +457,7 @@ app.get('/api/getProjectByProjectName/:projectName', authenticateToken, async (r
       projectName: project.projectName,
       imageURL: baseUrl + project.imageURL,
       username: project.username,
-      musicUrl: project.musicUrl,
+      musicUrl: baseUrl + project.musicUrl,
       eachPageDuration: project.eachPageDuration,
       pagesNumber: project.pagesNumber,
     }));

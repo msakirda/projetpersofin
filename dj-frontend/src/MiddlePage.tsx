@@ -1,6 +1,6 @@
 import NavBar from "./NavBar";
 import './MiddlePage.css'
-import { ChangeEvent, useCallback, useState } from "react";
+import { ChangeEvent, useCallback, useEffect, useState } from "react";
 
 
 interface ImageObject {
@@ -10,8 +10,8 @@ interface ImageObject {
 
 // Nouveau composant pour représenter une page du milieu
 const MiddlePage: 
-React.FC<{ middlePagesImages: Array<ImageObject>,updateMiddlePagesImages: any , pageIndex: number, currentPage: number, numPages: number, handleFirstPage: () => void, handlePrevPage: () => void, handleNextPage: () => void, handleLastPage: () => void }>
-= ( { middlePagesImages , updateMiddlePagesImages, pageIndex, currentPage, numPages, handleFirstPage, handlePrevPage, handleNextPage, handleLastPage }) => {
+React.FC<{ retrivedImageUrl: string ,  middlePagesImages: Array<ImageObject>,updateMiddlePagesImages: any , pageIndex: number, currentPage: number, numPages: number, handleFirstPage: () => void, handlePrevPage: () => void, handleNextPage: () => void, handleLastPage: () => void }>
+= ( { retrivedImageUrl , middlePagesImages , updateMiddlePagesImages, pageIndex, currentPage, numPages, handleFirstPage, handlePrevPage, handleNextPage, handleLastPage }) => {
     
     const [imageUrl, setImageUrl] = useState<string >("");
 
@@ -43,7 +43,16 @@ React.FC<{ middlePagesImages: Array<ImageObject>,updateMiddlePagesImages: any , 
         updateMiddlePagesImages([...middlePagesImages , { pageNumber: pageIndex, file :file }]);
 
       }
-    }, [updateMiddlePagesImages]);
+    }, [updateMiddlePagesImages ]);
+
+    useEffect (()=>{
+        if(retrivedImageUrl)
+        {
+          setImageUrl(retrivedImageUrl);
+          console.log("retrived Image in MiddlePage: " , retrivedImageUrl);
+          
+        }
+    }, [retrivedImageUrl])
 
     return (
     <div className={`slider-page ${pageIndex === currentPage ? 'current' : ''}`} id={`page${pageIndex}`}>

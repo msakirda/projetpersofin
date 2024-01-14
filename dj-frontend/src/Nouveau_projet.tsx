@@ -21,10 +21,24 @@ const Nouveau_projet = () => {
   const [resultVideoUrl , setResultVideoUrl] = useState<string>("");
   const [audioProvided , setAudioProvided] = useState<File|null>(null);
   const [pname , setPName] = useState<string>("");
+  const [retrivedImagesArray,setRetrivedImagesArray] = useState<string[]>([]);
   
-  useEffect(()=>{
-      setMiddlePagesImages([]);
-  },[])
+
+  // Inside Nouveau_projet component
+  const downloadImage = async (url: string | URL | Request) => {
+    try {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`Error downloading image: ${response.statusText}`);
+      }
+
+      const blob = await response.blob();
+      return blob;
+    } catch (error) {
+      console.error('Error downloading image:', error);
+      throw error; // Propagate the error if needed
+    }
+  };
 
   useEffect(() => {
     const projectName = localStorage.getItem("projectToLoad");
@@ -53,7 +67,31 @@ const Nouveau_projet = () => {
         setNumPages(data[0].pagesNumber)
         setEachPageDuration(data[0].eachPageDuration)
         setAudioProvided(data[0].audioProvided);
+        //
+        const retrivedImagesTMP = await Promise.all(
+          data.map(async (element: { imageURL: string} , index: number) => {
+            return element.imageURL;
+          })
+        );
+        console.log("retrived images from server" , retrivedImagesTMP);    
+        setRetrivedImagesArray(retrivedImagesTMP);
 
+        // Assuming ImageObject takes two parameters: file and pageNumber
+        const fetchImages = async (urls: (string | URL | Request)[]) => {
+          const images = await Promise.all(
+            urls.map(async (url: string | URL | Request, i: number) => {
+              const blob = await downloadImage(url); // Assuming downloadImage returns a Blob
+              const file = new File([blob], `filename_${i + 1}.extension`, { type: blob.type });
+              return { file, pageNumber: i + 1 };
+            })
+          );
+          return images;
+        };
+        const imageObjects = await fetchImages(retrivedImagesTMP);
+        setMiddlePagesImages(imageObjects);
+
+        
+        //
 
       } catch (error) {
         console.error('Error fetching projects:', error);
@@ -238,9 +276,10 @@ const Nouveau_projet = () => {
     // Pages du milieu
     let tmpPage
     for (let i = 0; i < numPages; i++) {
-      tmpPage = <MiddlePage key={i} middlePagesImages={middlePagesImages} updateMiddlePagesImages={updateMiddlePagesImages} pageIndex={i + 1} currentPage={currentPage} numPages={numPages + 2} handleFirstPage={handleFirstPage} handlePrevPage={handlePrevPage} handleNextPage={handleNextPage} handleLastPage={handleLastPage} />
+      tmpPage = <MiddlePage key={i} retrivedImageUrl={retrivedImagesArray[i]} middlePagesImages={middlePagesImages} updateMiddlePagesImages={updateMiddlePagesImages} pageIndex={i + 1} currentPage={currentPage} numPages={numPages + 2} handleFirstPage={handleFirstPage} handlePrevPage={handlePrevPage} handleNextPage={handleNextPage} handleLastPage={handleLastPage} />
       pages.push(tmpPage);
     }
+
     
 
     // Dernière page
@@ -261,7 +300,6 @@ const Nouveau_projet = () => {
         </div>
       </div>
     );
-
 
     return pages;
   };
