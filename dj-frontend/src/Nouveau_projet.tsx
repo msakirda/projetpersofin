@@ -66,7 +66,12 @@ const Nouveau_projet = () => {
         setPName(data[0].projectName)
         setNumPages(data[0].pagesNumber)
         setEachPageDuration(data[0].eachPageDuration)
-        setAudioProvided(data[0].audioProvided);
+        //
+        let blob = await downloadImage(data[0].musicUrl); // Assuming downloadImage returns a Blob
+        const file = new File([blob], data[0].musicUrl, { type: blob.type });
+        setAudioProvided(file);
+        console.log("retrieved audio from server", data[0].musicUrl);
+
         //
         const retrivedImagesTMP = await Promise.all(
           data.map(async (element: { imageURL: string} , index: number) => {
@@ -75,6 +80,8 @@ const Nouveau_projet = () => {
         );
         console.log("retrived images from server" , retrivedImagesTMP);    
         setRetrivedImagesArray(retrivedImagesTMP);
+        //
+        
 
         // Assuming ImageObject takes two parameters: file and pageNumber
         const fetchImages = async (urls: (string | URL | Request)[]) => {
@@ -265,9 +272,10 @@ const Nouveau_projet = () => {
             <input type='number' value={eachPageDuration} onChange={(e)=>setEachPageDuration(parseInt(e.target.value))} min={1} max={99} />
           </label>
           
-          <label htmlFor={`addAudioInput`} >
+          <label htmlFor={`addAudioInput`} style={{ backgroundColor: "gray"}}>
             Choose an audio file: 
-            <input  type="file" accept=".mp3" name={`addAudioInput`} id={`addAudioInput`}   className="inputfileAudio" onChange={(e)=>setAudioProvided(e.target.files![0])}/>
+            <input  type="file" accept=".mp3" style={{display:"none" }} name={`addAudioInput`} id={`addAudioInput`}   className="inputfileAudio" onChange={(e)=>setAudioProvided(e.target.files![0])}/>
+            {audioProvided && <p>Selected file: {audioProvided.name}</p>}
           </label>
         </div>
       </div>

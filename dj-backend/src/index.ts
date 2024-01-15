@@ -379,7 +379,7 @@ app.post('/generate-video-authenticated', authenticateToken , upload.array('vide
       await Project.create({
         username: username,
         imageURL: inputFile,
-        musicUrl: audioFile.filename,
+        musicUrl: "uploads/" + audioFile.filename,
         projectName : req.body.projectName,
         eachPageDuration : durationPerImage,
         pagesNumber : imagesAmount,

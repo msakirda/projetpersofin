@@ -326,7 +326,7 @@ app.post('/generate-video-authenticated', authenticateToken, upload.array('video
             yield project_model_1.default.create({
                 username: username,
                 imageURL: inputFile,
-                musicUrl: audioFile.filename,
+                musicUrl: "uploads/" + audioFile.filename,
                 projectName: req.body.projectName,
                 eachPageDuration: durationPerImage,
                 pagesNumber: imagesAmount,
