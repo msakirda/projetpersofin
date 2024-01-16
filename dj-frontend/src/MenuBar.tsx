@@ -124,7 +124,8 @@ function MenuBar() {
                       
                       <img id="image_profile" src={userConnected !== "#UserIncognito"
                       ? localStorage.getItem("userConnectedAvatarUrl")! 
-                      : "prof.png"} alt="Profil" />
+                      : "prof.png"
+                      } alt="Profil" />
                       {userConnected} (Profile)
                     </div>
                   </Link>

@@ -90,7 +90,7 @@ function Profil() {
     
         // Vous pouvez maintenant utiliser cette URL pour afficher l'image dans votre composant React
         setAvatar(avatarUrl);
-        window.location.reload();
+        
       } catch (error) {
         console.error('Error fetching avatar:', error);
         // Gérez l'erreur ici si nécessaire
@@ -236,7 +236,7 @@ function Profil() {
       else{
         localStorage.setItem("userConnectedEmail" , newEmail)
         formData.email = newEmail;
-        window.location.reload();
+        //window.location.reload();
       }
   
       const responseData = await response.json();

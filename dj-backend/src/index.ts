@@ -11,14 +11,25 @@ import path from 'path';
 
 import { v4 as uuidv4 } from 'uuid';
 
+import dotenv from 'dotenv';
+
+require('dotenv').config();
 
 // Création de l'application Express
 const app = express();
 const port = 3000;
+// Utiliser les variables d'environnement
+const dbHost = process.env.DB_HOST!;
+const dbPort = process.env.DB_PORT!;
+const dbName = process.env.DB_NAME!;
+const dbUser = process.env.DB_USER!;
+const dbPassword = process.env.DB_PASSWORD!;
+const serverPort = process.env.SERVER_PORT!;
+const nodeEnv = process.env.NODE_ENV!;
 
 // Configuration de Sequelize pour SQLite
-export const sequelize = new Sequelize('spalbum_database', 'jordan.ferrad', '8ZkXIGtlnCx4', {
-  host: 'ep-delicate-rice-a2e4ccjd.eu-central-1.aws.neon.tech',
+export const sequelize = new Sequelize(dbName, dbUser, dbPassword, {
+  host: dbHost,
   dialect: 'postgres' ,
   dialectOptions: {
     ssl: {
@@ -32,13 +43,14 @@ import User from './models/user.model';
 import Profile from './models/profile.model';
 import Userfiles from './models/userfiles.model';
 import Project from './models/project.model'
+import { env } from 'process';
 
 sequelize.sync()
   .then(() => {
     // Démarrage du serveur Express après la synchronisation
     app.listen(port, () => {
       console.log(`Serveur en cours d'exécution sur le port ${port}`);
-      
+
     });
   })
   .catch((error) => {

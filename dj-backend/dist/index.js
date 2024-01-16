@@ -21,12 +21,21 @@ const multer_1 = __importDefault(require("multer"));
 const fluent_ffmpeg_1 = __importDefault(require("fluent-ffmpeg"));
 const path_1 = __importDefault(require("path"));
 const uuid_1 = require("uuid");
+require('dotenv').config();
 // Création de l'application Express
 const app = (0, express_1.default)();
 const port = 3000;
+// Utiliser les variables d'environnement
+const dbHost = process.env.DB_HOST;
+const dbPort = process.env.DB_PORT;
+const dbName = process.env.DB_NAME;
+const dbUser = process.env.DB_USER;
+const dbPassword = process.env.DB_PASSWORD;
+const serverPort = process.env.SERVER_PORT;
+const nodeEnv = process.env.NODE_ENV;
 // Configuration de Sequelize pour SQLite
-exports.sequelize = new sequelize_1.Sequelize('spalbum_database', 'jordan.ferrad', '8ZkXIGtlnCx4', {
-    host: 'ep-delicate-rice-a2e4ccjd.eu-central-1.aws.neon.tech',
+exports.sequelize = new sequelize_1.Sequelize(dbName, dbUser, dbPassword, {
+    host: dbHost,
     dialect: 'postgres',
     dialectOptions: {
         ssl: {
