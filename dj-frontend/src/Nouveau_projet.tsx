@@ -104,12 +104,23 @@ const Nouveau_projet = () => {
         console.error('Error fetching projects:', error);
         // Handle error, perhaps set an error state or display an error message
       }
-    };
+    } 
 
     // Fetch data when component mounts or when projectName changes
     fetchProjectData();
 
-  }}, []);
+  }
+  else {
+    setPName("");
+    setNumPages(3);
+    setEachPageDuration(1);
+    setAudioProvided(null);
+    setMiddlePagesImages([]);
+
+  }
+
+    
+  }, []);
 
   const updateMiddlePagesImages = (newImages: ImageObject[]) => {
     // Créez une copie du tableau avant de le trier
@@ -263,7 +274,7 @@ const Nouveau_projet = () => {
             Project Name:
             <input type='text' value={pname} onChange={(e)=>setPName(e.target.value)}  />
           </label>
-          <label id='numberOfPagesInput'>
+          <label id='numberOfPagesInput' >
             Number of Pages:
             <input type='number' value={numPages} onChange={handleNumPagesChange} min={1} max={99} />
           </label>

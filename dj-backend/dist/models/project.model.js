@@ -26,12 +26,12 @@ Project.init({
         allowNull: false,
     },
     eachPageDuration: {
-        type: sequelize_1.DataTypes.NUMBER,
+        type: sequelize_1.DataTypes.INTEGER,
         primaryKey: false,
         allowNull: false,
     },
     pagesNumber: {
-        type: sequelize_1.DataTypes.NUMBER,
+        type: sequelize_1.DataTypes.INTEGER,
         primaryKey: false,
         allowNull: false,
     },

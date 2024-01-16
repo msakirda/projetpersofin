@@ -17,10 +17,15 @@ const app = express();
 const port = 3000;
 
 // Configuration de Sequelize pour SQLite
-export const sequelize = new Sequelize({
-  dialect: 'sqlite',
-  storage: './db.sqlite',
-  logging: console.log, // Active les logs Sequelize
+export const sequelize = new Sequelize('spalbum_database', 'jordan.ferrad', '8ZkXIGtlnCx4', {
+  host: 'ep-delicate-rice-a2e4ccjd.eu-central-1.aws.neon.tech',
+  dialect: 'postgres' ,
+  dialectOptions: {
+    ssl: {
+      require: true,
+      rejectUnauthorized: false, // Ajoutez ceci si vous rencontrez des problèmes avec l'auto-signature du certificat
+    },
+  },
 });
 
 import User from './models/user.model';
@@ -33,6 +38,7 @@ sequelize.sync()
     // Démarrage du serveur Express après la synchronisation
     app.listen(port, () => {
       console.log(`Serveur en cours d'exécution sur le port ${port}`);
+      
     });
   })
   .catch((error) => {

@@ -87,7 +87,9 @@ function MenuBar() {
 
 
   
-  
+  const handleClickNewProjectLink = ()=>{
+    localStorage.setItem("projectToLoad" , "");
+  }
 
   // Gestionnaire de clic pour le bouton du menu hamburger
   const handleClickSandwich = useCallback(() => {
@@ -109,7 +111,7 @@ function MenuBar() {
       {/* Titre de l'application avec lien vers la page d'accueil */}
       <div className='Menu_gauche_milieu'>
         <Link to={"/"} className="Titre_application">
-            <h1>SPEEDALBUM</h1>
+            <h1>SPEED ALBUM</h1>
         </Link>
 
         {/* Section du menu gauche (milieu) */}
@@ -134,8 +136,8 @@ function MenuBar() {
                   </Link>
                 )}
         {/*  */}
-        <Link className="menuOption" to="/Nouveau_projet">
-          <div className="Titre_Nouveau_projet menuSection">
+        <Link className="menuOption" to="/Nouveau_projet" onClick={handleClickNewProjectLink}>
+          <div className="Titre_Nouveau_projet menuSection" >
             New Project
           </div>
         </Link>

@@ -33,12 +33,12 @@ Project.init(
         allowNull: false,
     },
     eachPageDuration: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.INTEGER,
       primaryKey: false,
       allowNull: false,
     },
     pagesNumber: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.INTEGER,
       primaryKey: false,
       allowNull: false,
     },

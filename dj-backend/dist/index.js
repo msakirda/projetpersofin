@@ -25,10 +25,15 @@ const uuid_1 = require("uuid");
 const app = (0, express_1.default)();
 const port = 3000;
 // Configuration de Sequelize pour SQLite
-exports.sequelize = new sequelize_1.Sequelize({
-    dialect: 'sqlite',
-    storage: './db.sqlite',
-    logging: console.log, // Active les logs Sequelize
+exports.sequelize = new sequelize_1.Sequelize('spalbum_database', 'jordan.ferrad', '8ZkXIGtlnCx4', {
+    host: 'ep-delicate-rice-a2e4ccjd.eu-central-1.aws.neon.tech',
+    dialect: 'postgres',
+    dialectOptions: {
+        ssl: {
+            require: true,
+            rejectUnauthorized: false, // Ajoutez ceci si vous rencontrez des problèmes avec l'auto-signature du certificat
+        },
+    },
 });
 const user_model_1 = __importDefault(require("./models/user.model"));
 const profile_model_1 = __importDefault(require("./models/profile.model"));
