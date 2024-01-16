@@ -28,7 +28,7 @@
     "file-saver": "^2.0.5",
     "fluent-ffmpeg": "^2.1.2",
     "gifshot": "^0.4.5",
-    "jest": "^26.6.0",
+    "jest": "^29.0.0",
     "jsonwebtoken": "^8.5.1",
     "jsrsasign": "^10.9.0",
     "jws": "^4.0.0",
