@@ -419,9 +419,11 @@ app.get('/api/getProjectsPreview/:username', authenticateToken, async (req: Requ
     const username = req.params.username;
 
     const projects = await Project.findAll({
-      attributes: ['projectName', 'imageURL', 'username', 'musicUrl' , 'eachPageDuration' , 'pagesNumber'],
-      where: { username: username },
-      group: ['projectName'], // Add this line to group by projectName
+      attributes: ["projectName", "imageURL", "username", "musicUrl", "eachPageDuration", "pagesNumber"],
+      where: {
+        username: 'test'
+      },
+      group: ["projectName", "imageURL", "username", "musicUrl", "eachPageDuration", "pagesNumber"]
     });
 
     if (!projects || projects.length === 0) {
@@ -460,9 +462,11 @@ app.get('/api/getProjectByProjectName/:projectName', authenticateToken, async (r
     const projectName = req.params.projectName;
 
     const projects = await Project.findAll({
-      attributes: ['projectName', 'imageURL', 'username', 'musicUrl' , 'eachPageDuration' , 'pagesNumber'],
-      where: { projectName: projectName },
-      group: ['projectName'], // Add this line to group by projectName
+      attributes: ["projectName", "imageURL", "username", "musicUrl", "eachPageDuration", "pagesNumber"],
+      where: {
+        username: 'test'
+      },
+      group: ["projectName", "imageURL", "username", "musicUrl", "eachPageDuration", "pagesNumber"]
     });
 
     if (!projects || projects.length === 0) {

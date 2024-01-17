@@ -359,9 +359,11 @@ app.get('/api/getProjectsPreview/:username', authenticateToken, (req, res) => __
     try {
         const username = req.params.username;
         const projects = yield project_model_1.default.findAll({
-            attributes: ['projectName', 'imageURL', 'username', 'musicUrl', 'eachPageDuration', 'pagesNumber'],
-            where: { username: username },
-            group: ['projectName'], // Add this line to group by projectName
+            attributes: ["projectName", "imageURL", "username", "musicUrl", "eachPageDuration", "pagesNumber"],
+            where: {
+                username: 'test'
+            },
+            group: ["projectName", "imageURL", "username", "musicUrl", "eachPageDuration", "pagesNumber"]
         });
         if (!projects || projects.length === 0) {
             return res.status(404).json({ message: 'No projects found for the given username' });
@@ -389,9 +391,11 @@ app.get('/api/getProjectByProjectName/:projectName', authenticateToken, (req, re
     try {
         const projectName = req.params.projectName;
         const projects = yield project_model_1.default.findAll({
-            attributes: ['projectName', 'imageURL', 'username', 'musicUrl', 'eachPageDuration', 'pagesNumber'],
-            where: { projectName: projectName },
-            group: ['projectName'], // Add this line to group by projectName
+            attributes: ["projectName", "imageURL", "username", "musicUrl", "eachPageDuration", "pagesNumber"],
+            where: {
+                username: 'test'
+            },
+            group: ["projectName", "imageURL", "username", "musicUrl", "eachPageDuration", "pagesNumber"]
         });
         if (!projects || projects.length === 0) {
             return res.status(404).json({ message: 'No projects found for the given username' });
