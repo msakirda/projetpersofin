@@ -152,7 +152,7 @@ app.post('/users/create/:username', async (req: Request, res: Response) => {
 
       // Create a token JWT
       const token = jwt.sign( { username: req.params.username } , secretKey, { expiresIn: '1h' });
-      res.json({ signedUp: true, message: 'Compte Utilisateur [${req.params.username}] créé avec succès.', token , user });
+      res.json({ signedUp: true, message: `Compte Utilisateur [${req.params.username}] créé avec succès.`, token , user , email:req.body.email });
     } else {
       res.json({ exists: true, response: "Cet Utilisateur existe déjà, création de compte impossible." });
     }
@@ -421,7 +421,7 @@ app.get('/api/getProjectsPreview/:username', authenticateToken, async (req: Requ
     const projects = await Project.findAll({
       attributes: ["projectName", "imageURL", "username", "musicUrl", "eachPageDuration", "pagesNumber"],
       where: {
-        username: 'test'
+        username: req.params.username
       },
       group: ["projectName", "imageURL", "username", "musicUrl", "eachPageDuration", "pagesNumber"]
     });
@@ -464,7 +464,7 @@ app.get('/api/getProjectByProjectName/:projectName', authenticateToken, async (r
     const projects = await Project.findAll({
       attributes: ["projectName", "imageURL", "username", "musicUrl", "eachPageDuration", "pagesNumber"],
       where: {
-        username: 'test'
+        projectName: req.params.projectName
       },
       group: ["projectName", "imageURL", "username", "musicUrl", "eachPageDuration", "pagesNumber"]
     });

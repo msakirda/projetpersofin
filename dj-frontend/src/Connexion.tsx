@@ -90,7 +90,7 @@ function Connection() {
                 setserverResponseCreation(data.response);
                 localStorage.setItem('token', data.token);
                 localStorage.setItem('userConnectedUsername' , decodedToken.username)
-                localStorage.setItem('userConnectedEmail' ,  data.user.email)
+                localStorage.setItem('userConnectedEmail' ,  data.email)
                 console.log(localStorage.getItem("userConnectedUsername") );
                 
                 // Réinitialisation des champs du formulaire
@@ -103,8 +103,8 @@ function Connection() {
                 // Redirection vers le profil après une courte attente
                 setShewPromptCreation(true)
                 setTimeout( ()=>{
-                    navigate('/Profil')
-                } , 1000)
+                    navigate('/Nouveau_projet')
+                } , 100)
                 
               })
               .catch(error => {
@@ -159,8 +159,8 @@ function Connection() {
               setnouveaumotdepasseConnexion('');
               // Redirection vers le profil après une courte attente
               setTimeout( ()=>{
-                  navigate('/Profil')
-              } , 1000)
+                  navigate('/Nouveau_Projet')
+              } , 100)
           }
           else{
               setserverResponseConnection(data.message)

@@ -34,6 +34,7 @@ function MenuBar() {
       setUserConnected('#UserIncognito');
       localStorage.removeItem('token')
       localStorage.setItem('userConnectedUsername' , '#UserIncognito');
+      localStorage.setItem("projectToLoad" , "");
       console.log("deconnexion.");
       navigate('/')
 
@@ -122,9 +123,9 @@ function MenuBar() {
                     <div className="menuSection">
                       {/* Composant de profil (image, etc.) */}
                       
-                      <img id="image_profile" src={userConnected !== "#UserIncognito"
+                      <img id="image_profile" src={(userConnected !== "#UserIncognito" && localStorage.getItem("userConnectedAvatarUrl") 
                       ? localStorage.getItem("userConnectedAvatarUrl")! 
-                      : "prof.png"
+                      : "./prof.png")
                       } alt="Profil" />
                       {userConnected} (Profile)
                     </div>

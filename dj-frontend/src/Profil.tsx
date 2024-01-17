@@ -117,6 +117,7 @@ function Profil() {
       const imageUrl = URL.createObjectURL(file);
       setAvatar(imageUrl);
       setAvatarFile(file);
+      window.location.reload();
     }
   };
 

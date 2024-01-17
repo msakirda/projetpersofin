@@ -55,7 +55,7 @@ const MyProjects: React.FC = () => {
             })
 
           ) : (
-            <p>No projects found...</p>
+            <p>No projects found yet...</p>
           )}
         </div>
       </div>
