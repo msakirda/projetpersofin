@@ -7,7 +7,7 @@ import App from './App.tsx'
 // Utilisation de ReactDOM.createRoot pour rendre le composant App dans la racine de l'élément avec l'ID 'root'
 ReactDOM.createRoot(document.getElementById('root')!).render(
   // Utilisation de React.StrictMode pour des vérifications supplémentaires pendant le développement
-  <React.StrictMode>
+
     <App />
-  </React.StrictMode>,
+
 )
