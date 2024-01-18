@@ -160,7 +160,7 @@ function MenuBar() {
         {(userConnected !== "#UserIncognito" ? 
           <Link className="menuOption" to="/Plans">
             <div className="Titre_Plans menuSection">
-              Plans
+              Premium
             </div>
           </Link> 
           : 
