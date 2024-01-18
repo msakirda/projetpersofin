@@ -2,6 +2,18 @@
     border: 3px solid black;
 }
 
-#projectDiver{
+#projectDiv{
     border: '1px solid black';
+}
+
+#imageDelete{
+    width: 10%;
+    height: 10%;
+    margin: 10px;
+    display: block;
+}
+
+#divProjectGlobal{
+    width: 20%;
+    height: 20%;
 }

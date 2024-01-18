@@ -76,7 +76,7 @@ app.options('*', cors());
   next();
 });
 
-const secretKey = 'mubla_deeps';
+const secretKey = process.env.SECRET_KEY;
   
 
 const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
@@ -493,5 +493,27 @@ app.get('/api/getProjectByProjectName/:projectName', authenticateToken, async (r
   } catch (error) {
     console.error('Error fetching projects:', error);
     res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
+
+app.delete('/api/deleteProject/:projectName', async (req, res) => {
+  const projectName = req.params.projectName;
+  console.log("va etre supprimé de la bdd: " + projectName);
+  
+
+  try {
+    // Utiliser destroy pour supprimer un ou plusieurs enregistrements selon la condition
+    const result = await Project.destroy({
+      where: { projectName: projectName },
+    });
+
+    if (result > 0) {
+      res.status(204).send(); // 204 No Content pour indiquer le succès sans contenu
+    } else {
+      res.status(404).json({ message: 'Projet non trouvé.' });
+    }
+  } catch (error) {
+    console.error('Erreur lors de la suppression du projet :', error);
+    res.status(500).json({ message: 'Erreur lors de la suppression du projet.' });
   }
 });
