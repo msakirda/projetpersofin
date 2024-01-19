@@ -272,7 +272,7 @@ app.put('/api/changeAvatar' ,authenticateToken,  upload.single('avatar'), async 
 
     // Update the avatar URL in the database using Sequelize
     await Profile.update(
-      { avatarUrl: avatarUrl },
+      { avatarURL: avatarUrl },
       { where: { username: req.body.username } }
     );
 

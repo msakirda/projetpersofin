@@ -234,7 +234,7 @@ app.put('/api/changeAvatar', authenticateToken, upload.single('avatar'), (req, r
         // You can now access the details of the file in req.file
         const avatarUrl = req.file ? `http://localhost:3000/uploads/${req.file.filename}` : 'default_avatar_url';
         // Update the avatar URL in the database using Sequelize
-        yield profile_model_1.default.update({ avatarUrl: avatarUrl }, { where: { username: req.body.username } });
+        yield profile_model_1.default.update({ avatarURL: avatarUrl }, { where: { username: req.body.username } });
         res.json({ message: 'Avatar changed successfully' });
     }
     catch (error) {

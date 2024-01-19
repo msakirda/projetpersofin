@@ -117,7 +117,7 @@ function Profil() {
       const imageUrl = URL.createObjectURL(file);
       setAvatar(imageUrl);
       setAvatarFile(file);
-      window.location.reload();
+      
     }
   };
 
@@ -265,7 +265,7 @@ function Profil() {
       formDataTMP.append('username', storageUsername);
       formDataTMP.append('avatar', avatarFile!);
 
-      console.log(storageToken);
+      console.log(avatarFile);
       
 
       const response = await fetch('http://localhost:3000/api/changeAvatar', {
@@ -284,6 +284,7 @@ function Profil() {
   
       const responseData = await response.json();
       console.log(responseData.message);
+      window.location.reload();
       // Handle the successful response here, if needed
     } catch (error) {
       console.error('Error changing avatar:', error);
