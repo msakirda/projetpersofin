@@ -362,7 +362,7 @@ app.get('/api/getProjectsPreview/:username', authenticateToken, (req, res) => __
             group: ["projectName", "imageURL", "username", "musicUrl", "eachPageDuration", "pagesNumber"]
         });
         if (!projects || projects.length === 0) {
-            return res.status(404).json({ message: 'No projects found for the given username' });
+            return res.json({ message: 'No projects found for the given username' });
         }
         const baseUrl = `http://localhost:${port}/`;
         const projectData = projects.map((project) => ({

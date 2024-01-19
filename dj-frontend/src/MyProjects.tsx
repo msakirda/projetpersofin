@@ -28,10 +28,19 @@ const MyProjects: React.FC = () => {
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
+        if(data.message)
+        {
+          console.log("il n'y a pas de projets.");
+          
+        }
+        else{
+          console.log('Fetched projects:', data);
+          setProjects(data);
+          console.log("Image URL: " + data[0].imageURL);
+        }
 
-        console.log('Fetched projects:', data);
-        setProjects(data);
-        console.log("Image URL: " + data[0].imageURL);
+
+        
       } catch (error) {
         console.error('Error fetching projects:', error);
       }
