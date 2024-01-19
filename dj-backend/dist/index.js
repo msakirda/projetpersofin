@@ -46,7 +46,6 @@ exports.sequelize = new sequelize_1.Sequelize(dbName, dbUser, dbPassword, {
 });
 const user_model_1 = __importDefault(require("./models/user.model"));
 const profile_model_1 = __importDefault(require("./models/profile.model"));
-const userfiles_model_1 = __importDefault(require("./models/userfiles.model"));
 const project_model_1 = __importDefault(require("./models/project.model"));
 exports.sequelize.sync()
     .then(() => {
@@ -129,9 +128,6 @@ app.post('/users/create/:username', (req, res) => __awaiter(void 0, void 0, void
                 phone: "",
                 address: "",
                 country: "",
-            });
-            const newAvatar = yield userfiles_model_1.default.create({
-                username: req.params.username, // Assuming 'username' is a required field
                 avatarUrl: "",
             });
             // Create a token JWT
@@ -238,7 +234,7 @@ app.put('/api/changeAvatar', authenticateToken, upload.single('avatar'), (req, r
         // You can now access the details of the file in req.file
         const avatarUrl = req.file ? `http://localhost:3000/uploads/${req.file.filename}` : 'default_avatar_url';
         // Update the avatar URL in the database using Sequelize
-        yield userfiles_model_1.default.update({ avatarUrl: avatarUrl, username: req.body.username }, { where: { username: req.body.username } });
+        yield profile_model_1.default.update({ avatarUrl: avatarUrl }, { where: { username: req.body.username } });
         res.json({ message: 'Avatar changed successfully' });
     }
     catch (error) {
@@ -248,11 +244,11 @@ app.put('/api/changeAvatar', authenticateToken, upload.single('avatar'), (req, r
 }));
 app.get('/getAvatar/:token/:username', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const userFiles = yield userfiles_model_1.default.findOne({ where: { username: req.params.username } });
-        if (!userFiles) {
+        const userProfile = yield profile_model_1.default.findOne({ where: { username: req.params.username } });
+        if (!userProfile) {
             return res.status(404).json({ message: 'User not found' });
         }
-        const avatarUrl = userFiles.avatarUrl;
+        const avatarUrl = userProfile.dataValues.avatarURL;
         res.json({ avatarUrl });
     }
     catch (error) {

@@ -3,10 +3,16 @@ import { Sequelize, DataTypes, Model } from 'sequelize';
 import {sequelize} from '../index';
 
 class Profile extends Model {
+
   public username!: string;
-  public password!: string;
+  public firstname!: string;
+  public lastname!: string;
   public email!: string;
-}
+  public phone!: string;
+  public address!: string;
+  public country!: string;
+  public avatarURL!: string;
+} 
 
 Profile.init(
   {
@@ -16,19 +22,19 @@ Profile.init(
     },
     firstname: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     lastname: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     email: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
       },
     phone: {
-    type: DataTypes.STRING,
-    allowNull: true,
+      type: DataTypes.STRING,
+      allowNull: true,
     },
     address: {
         type: DataTypes.STRING,
@@ -37,6 +43,10 @@ Profile.init(
     country: {
         type: DataTypes.STRING,
         allowNull: true,
+    },
+    avatarURL: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
   },
   {

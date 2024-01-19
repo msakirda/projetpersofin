@@ -41,9 +41,7 @@ export const sequelize = new Sequelize(dbName, dbUser, dbPassword, {
 
 import User from './models/user.model';
 import Profile from './models/profile.model';
-import Userfiles from './models/userfiles.model';
 import Project from './models/project.model'
-import { env } from 'process';
 
 sequelize.sync()
   .then(() => {
@@ -144,11 +142,9 @@ app.post('/users/create/:username', async (req: Request, res: Response) => {
         phone: "",
         address: "",
         country: "",
-      });
-      const newAvatar = await Userfiles.create({
-        username: req.params.username, // Assuming 'username' is a required field
         avatarUrl: "",
       });
+
 
       // Create a token JWT
       const token = jwt.sign( { username: req.params.username } , secretKey, { expiresIn: '1h' });
@@ -275,8 +271,8 @@ app.put('/api/changeAvatar' ,authenticateToken,  upload.single('avatar'), async 
     const avatarUrl = req.file ? `http://localhost:3000/uploads/${req.file.filename}` : 'default_avatar_url';
 
     // Update the avatar URL in the database using Sequelize
-    await Userfiles.update(
-      { avatarUrl: avatarUrl , username : req.body.username },
+    await Profile.update(
+      { avatarUrl: avatarUrl },
       { where: { username: req.body.username } }
     );
 
@@ -289,13 +285,13 @@ app.put('/api/changeAvatar' ,authenticateToken,  upload.single('avatar'), async 
 
 app.get('/getAvatar/:token/:username', async (req, res) => {
   try {
-    const userFiles = await Userfiles.findOne({ where: { username: req.params.username } });
+    const userProfile = await Profile.findOne({ where: { username: req.params.username } });
 
-    if (!userFiles) {
+    if (!userProfile) {                                                                                                             
       return res.status(404).json({ message: 'User not found' });
     }
 
-    const avatarUrl = userFiles.avatarUrl;
+    const avatarUrl = userProfile.dataValues.avatarURL;
     res.json({ avatarUrl });
   } catch (error) {
     console.error('Error fetching avatar:', error);

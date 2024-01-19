@@ -12,15 +12,15 @@ Profile.init({
     },
     firstname: {
         type: sequelize_1.DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
     },
     lastname: {
         type: sequelize_1.DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
     },
     email: {
         type: sequelize_1.DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
     },
     phone: {
         type: sequelize_1.DataTypes.STRING,
@@ -31,6 +31,10 @@ Profile.init({
         allowNull: true,
     },
     country: {
+        type: sequelize_1.DataTypes.STRING,
+        allowNull: true,
+    },
+    avatarURL: {
         type: sequelize_1.DataTypes.STRING,
         allowNull: true,
     },
