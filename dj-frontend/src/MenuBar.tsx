@@ -15,6 +15,7 @@ function MenuBar() {
   const [userConnected, setUserConnected] = useState("#UserIncognito");
   const navigate = useNavigate();
   const [isMenuOpen , setIsMenuOpen] = useState(false);
+  const [avatarUrlState , setAvatarUrlState] = useState("");
 
   // Interface pour représenter la structure du payload du token
   interface TokenPayload {
@@ -35,11 +36,25 @@ function MenuBar() {
       localStorage.removeItem('token')
       localStorage.setItem('userConnectedUsername' , '#UserIncognito');
       localStorage.setItem("projectToLoad" , "");
+      localStorage.setItem("userConnectedAvatarUrl" , "")
       console.log("deconnexion.");
       navigate('/')
 
     }
   };
+
+  const fetchAvatar = useCallback(async ()=>{
+    const theToken = localStorage.getItem('token');
+    const theUsername = localStorage.getItem('userConnectedUsername');
+    const response = await fetch(`http://localhost:3000/getAvatar/${theToken}/${theUsername}`);
+    const responseData = await response.json();
+    const avatarUrl = responseData.avatarUrl;
+    localStorage.setItem("userConnectedAvatarUrl" , avatarUrl?avatarUrl:"");
+    setAvatarUrlState(avatarUrl?avatarUrl:"");
+    
+  }
+  ,[])
+
 
   useEffect(() => {
     // Récupération du token depuis le stockage local
@@ -63,6 +78,8 @@ function MenuBar() {
           {
             setUserConnected(decodedToken.username);
           }
+          ///////////////////////////////////////////////////////////////////////////////////
+          fetchAvatar();
         } else {
           // Logout if the decoded token is null or undefined
           handleLogout();
@@ -124,7 +141,7 @@ function MenuBar() {
                       {/* Composant de profil (image, etc.) */}
                       
                       <img id="image_profile" src={(userConnected !== "#UserIncognito" && localStorage.getItem("userConnectedAvatarUrl") 
-                      ? localStorage.getItem("userConnectedAvatarUrl")! 
+                      ? avatarUrlState 
                       : "./prof.png")
                       } alt="Profil" />
                       {userConnected} (Profile)

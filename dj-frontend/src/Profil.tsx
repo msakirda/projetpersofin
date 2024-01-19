@@ -83,7 +83,7 @@ function Profil() {
     
         const responseData = await response.json();
         const avatarUrl = responseData.avatarUrl;
-        localStorage.setItem("userConnectedAvatarUrl" , avatarUrl);
+        localStorage.setItem("userConnectedAvatarUrl" , avatarUrl?avatarUrl:"");
     
         // Maintenant, vous avez l'URL de l'avatar
         console.log('Avatar URL:', avatarUrl);

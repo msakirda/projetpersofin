@@ -104,7 +104,7 @@ function Connection() {
                 setShewPromptCreation(true)
                 setTimeout( ()=>{
                     navigate('/Nouveau_projet')
-                } , 100)
+                } , 500)
                 
               })
               .catch(error => {
