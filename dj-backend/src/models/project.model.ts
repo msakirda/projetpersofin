@@ -4,9 +4,9 @@ import { sequelize } from '../index';
 
 class Project extends Model {
   public username!: string;
-  public imageURL!: string; // Updated to store multiple image URLs
   public musicUrl! : string;
   public projectName! : string;
+  public previewUrl! : string;
   public eachPageDuration! : number;
   public pagesNumber! : number;
 }
@@ -23,7 +23,7 @@ Project.init(
       primaryKey: false,
       allowNull: false,
     },
-    imageURL: {
+    previewURL: {
       type: DataTypes.STRING, // Updated to use an array for multiple images
       allowNull: false,
     },

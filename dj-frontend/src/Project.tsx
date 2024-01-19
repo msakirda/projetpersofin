@@ -21,6 +21,9 @@ const Project: React.FC<ProjectProps> = ({ projectName, imageUrl }) => {
 
   const handleDeleteProject = async () => {
     try {
+      if(!window.confirm("êtes vous sûr de vouloir supprimer ce projet?"))
+        return;
+
       // Envoyer une requête à l'API pour supprimer le projet
       const token = localStorage.getItem("token");
 

@@ -1,7 +1,7 @@
 
 import express ,{ Request, Response, NextFunction } from 'express';
 import { Sequelize } from 'sequelize';
-const cors = require('cors');
+import cors from 'cors';
 const jwt = require('jsonwebtoken'); // Importez jsonwebtoken
 
 import multer from 'multer'; 
@@ -10,10 +10,7 @@ import fs from 'fs';
 import path from 'path';
 
 import { v4 as uuidv4 } from 'uuid';
-
-import dotenv from 'dotenv';
-
-require('dotenv').config();
+import 'dotenv/config'
 
 // Création de l'application Express
 const app = express();
@@ -42,8 +39,10 @@ export const sequelize = new Sequelize(dbName, dbUser, dbPassword, {
 import User from './models/user.model';
 import Profile from './models/profile.model';
 import Project from './models/project.model'
+import Diapo from './models/diapo.model';
 
-sequelize.sync()
+// sequelize.sync({force: true})
+sequelize.sync({})
   .then(() => {
     // Démarrage du serveur Express après la synchronisation
     app.listen(port, () => {
@@ -382,23 +381,31 @@ app.post('/generate-video-authenticated', authenticateToken , upload.array('vide
     console.log('Ici le serveur, Vidéo générée avec succès:', outputVideo);
   
     const token = req.headers.authorization!.split(' ')[1];
-    const decodedToken =  jwt.verify(token, 'mubla_deeps');
+    const decodedToken =  jwt.verify(token, secretKey);
     const username = decodedToken.username;
 
     console.log("username decoded: " , username );
     
 
-    // Save each image URL in the database
-    for (const inputFile of inputFiles) {
-      await Project.create({
-        username: username,
-        imageURL: inputFile,
-        musicUrl: "uploads/" + audioFile.filename,
+    const baseUrl = `http://localhost:${port}/`;
+
+    //create a project
+    Project.create({
+      username: username,
+      previewURL: baseUrl + inputFiles[0],
+      musicUrl: "uploads/" + audioFile.filename,
+      projectName : req.body.projectName,
+      eachPageDuration : durationPerImage,
+      pagesNumber : imagesAmount,
+    });
+    // Save each image URLs in the database
+    inputFiles.forEach((e,i)=> {
+      Diapo.create({
+        imageURL: e,
         projectName : req.body.projectName,
-        eachPageDuration : durationPerImage,
-        pagesNumber : imagesAmount,
+        index: i
       });
-    }
+    });
 
     // Renvoie la vidéo au client
     const videoURL = `${req.protocol}://${req.get('host')}/${outputVideo}`;
@@ -415,11 +422,8 @@ app.get('/api/getProjectsPreview/:username', authenticateToken, async (req: Requ
     const username = req.params.username;
 
     const projects = await Project.findAll({
-      attributes: ["projectName", "imageURL", "username", "musicUrl", "eachPageDuration", "pagesNumber"],
-      where: {
-        username: req.params.username
-      },
-      group: ["projectName", "imageURL", "username", "musicUrl", "eachPageDuration", "pagesNumber"]
+      attributes: ["projectName", "previewURL"],
+      where: {username: req.params.username}
     });
 
     if (!projects || projects.length === 0) {
@@ -429,16 +433,13 @@ app.get('/api/getProjectsPreview/:username', authenticateToken, async (req: Requ
     const baseUrl = `http://localhost:${port}/`;
 
     const projectData = projects.map((project) => ({
-      projectName: project.projectName,
-      imageURL: baseUrl + project.imageURL,
-      username: project.username,
-      musicUrl: project.musicUrl,
-      eachPageDuration: project.eachPageDuration,
-      pagesNumber: project.pagesNumber,
+      projectName: project.dataValues.projectName,
+      previewURL: project.dataValues.previewUrl, // Utiliser le même nom que côté serveur
     }));
+    
 
     console.log("voici les projets trouvés: " , projectData);
-    console.log("image url: " , projectData[0].imageURL);
+    console.log("preview url: " , projectData[0].previewURL);
     
     
     res.json(projectData);
@@ -452,39 +453,43 @@ app.get('/api/getProjectsPreview/:username', authenticateToken, async (req: Requ
 
 
 
-User
 app.get('/api/getProjectByProjectName/:projectName', authenticateToken, async (req: Request, res: Response) => {
   try {
     const projectName = req.params.projectName;
 
-    const projects = await Project.findAll({
+    ///////////////////////////////////////////////////////// recuperation projet datas
+    const project = await Project.findOne({
       attributes: ["projectName", "imageURL", "username", "musicUrl", "eachPageDuration", "pagesNumber"],
       where: {
         projectName: req.params.projectName
-      },
-      group: ["projectName", "imageURL", "username", "musicUrl", "eachPageDuration", "pagesNumber"]
+      }
     });
-
-    if (!projects || projects.length === 0) {
-      return res.status(404).json({ message: 'No projects found for the given username' });
-    }
 
     const baseUrl = `http://localhost:${port}/`;
 
-    const projectData = projects.map((project) => ({
-      projectName: project.projectName,
-      imageURL: baseUrl + project.imageURL,
-      username: project.username,
-      musicUrl: baseUrl + project.musicUrl,
-      eachPageDuration: project.eachPageDuration,
-      pagesNumber: project.pagesNumber,
-    }));
+    const projectData = {
+      projectName: project?.dataValues.projectName,
+      imageURL: baseUrl + project?.dataValues.previewUrl,
+      username: project?.dataValues.username,
+      musicUrl: baseUrl + project?.dataValues.musicUrl,
+      eachPageDuration: project?.dataValues.eachPageDuration,
+      pagesNumber: project?.dataValues.pagesNumber,
+    };
 
-    console.log("voici les projets trouvés: " , projectData);
-    console.log("image url: " , projectData[0].imageURL);
-    
-    
-    res.json(projectData);
+    ////////////////////////////////////////////////////// recuperation projet images (diapos)
+    const projectDiapos = await Diapo.findAll({
+      attributes: ["imageURL"],
+      where: {
+        projectName: req.params.projectName
+      },
+      order: ["index"]
+    });
+
+    const diaposData = projectDiapos.map((diapo) => ({
+      imageURL: baseUrl + diapo.imageURL,
+    }));
+    /////////////////////////////////////////////////////envoi des settings de projet et des url d images separement
+    res.json({projectData , diaposData});
 
   } catch (error) {
     console.error('Error fetching projects:', error);

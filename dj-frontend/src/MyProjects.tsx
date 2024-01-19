@@ -36,7 +36,7 @@ const MyProjects: React.FC = () => {
         else{
           console.log('Fetched projects:', data);
           setProjects(data);
-          console.log("Image URL: " + data[0].imageURL);
+          console.log("preview URL: " + data[0].previewURL);
         }
 
 

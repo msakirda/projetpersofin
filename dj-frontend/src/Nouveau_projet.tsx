@@ -63,18 +63,18 @@ const Nouveau_projet = () => {
         const data = await response.json();
         
         
-        setPName(data[0].projectName)
-        setNumPages(data[0].pagesNumber)
-        setEachPageDuration(data[0].eachPageDuration)
+        setPName(data.projectData.projectName)
+        setNumPages(data.projectData.pagesNumber)
+        setEachPageDuration(data.projectData.eachPageDuration)
         //
-        let blob = await downloadImage(data[0].musicUrl); // Assuming downloadImage returns a Blob
-        const file = new File([blob], data[0].musicUrl, { type: blob.type });
+        let blob = await downloadImage(data.projectData.musicUrl); // Assuming downloadImage returns a Blob
+        const file = new File([blob], data.projectData.musicUrl, { type: blob.type });
         setAudioProvided(file);
-        console.log("retrieved audio from server", data[0].musicUrl);
+        console.log("retrieved audio from server", data.projectData.musicUrl);
 
         //
         const retrivedImagesTMP = await Promise.all(
-          data.map(async (element: { imageURL: string} , index: number) => {
+          data.diaposData.map(async (element: { imageURL: string} , index: number) => {
             return element.imageURL;
           })
         );
